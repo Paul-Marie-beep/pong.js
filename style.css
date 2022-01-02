@@ -54,7 +54,7 @@ body {
 
 .plate {
   border: 10px solid black;
-  /* margin-top: 43%; */
+  transform: translateY(-130%);
 }
 
 .hidden {
