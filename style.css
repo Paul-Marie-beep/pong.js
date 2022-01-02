@@ -1,0 +1,8 @@
+body {
+  margin: 0px;
+  height: 100%;
+  background: linear-gradient(to top left, #18ceee, #5577e6);
+  background-size: cover;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  position: relative;
+}
