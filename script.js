@@ -37,6 +37,7 @@ const alphabet = [
 ];
 let ballInitialColumn;
 let descentInterval;
+let caseAtTheTime;
 
 class baseCaseCl {
   constructor(position) {
@@ -127,6 +128,10 @@ class createBoardCl {
             cas.line === alphabet[newBallLineIndex] &&
             cas.column === ballInitialColumn
         ).ballPresence = true;
+
+        caseAtTheTime = boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        );
         const newBoardDisplay = new showBoardCl();
         //  On arrête la descente une fois qu'on est arrivé en bas de la plage de jeu.
         if (
@@ -162,22 +167,44 @@ class showBaseCl {
   }
 }
 
+class showInitialBoardCl {
+  constructor() {
+    this.showInitialBoard();
+  }
+
+  showInitialBoard() {
+    board.innerHTML = "";
+    boardCasesArray.forEach(function (cas) {
+      if (cas.ballPresence) {
+        let html = `<div class="case line-${cas.line} column-${cas.column}"><div class="ball"></div></div>`;
+        board.insertAdjacentHTML("beforeend", html);
+      } else {
+        let html = `<div class="case line-${cas.line} column-${cas.column}"></div></div>`;
+        board.insertAdjacentHTML("beforeend", html);
+      }
+    });
+  }
+}
+
 class showBoardCl {
   constructor() {
     this.showBoard();
   }
 
   showBoard() {
-    board.innerHTML = "";
-    boardCasesArray.forEach(function (cas) {
-      if (cas.ballPresence) {
-        let html = `<div class="case board--case line-${cas.line} colunm-${cas.column}"><div class="ball"></div></div>`;
-        board.insertAdjacentHTML("beforeend", html);
-      } else {
-        let html = `<div class="case board--case line-${cas.line} colunm-${cas.column}"><div class="ball hidden"></div></div>`;
-        board.insertAdjacentHTML("beforeend", html);
-      }
-    });
+    // On vide la  (ie la div) contenant la balle au préalable. On la vide en remontant à l'élement parent de la la balle et en supprimant le html de la div
+    document.querySelector(".ball").parentElement.innerHTML = "";
+
+    // On sélection la case où l'on doit mettre la balle et on la rajoute. On soustrait 1 car on la sélectionne par l'index d'une nodeliste, index qui commence donc à 0.
+    document.querySelectorAll(`.line-${caseAtTheTime.line}`)[
+      caseAtTheTime.column - 1
+    ].innerHTML = '<div class="ball"></div>';
+  }
+}
+
+class ballMovementCl {
+  constructor() {
+    this.WhichMove();
   }
 }
 
@@ -221,7 +248,7 @@ class newGameCl {
 
   newShow() {
     const newBaseDisplay = new showBaseCl();
-    const newBoardDisplay = new showBoardCl();
+    const newBoardDisplay = new showInitialBoardCl();
   }
 
   gameLauncher() {
