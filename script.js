@@ -36,8 +36,8 @@ const alphabet = [
   "Z",
 ];
 let ballInitialColumn;
-let descentInterval;
 let caseAtTheTime;
+let lineMax;
 
 class baseCaseCl {
   constructor(position) {
@@ -112,9 +112,10 @@ class createBoardCl {
 
   // On gère la première descente de la balle qui va se faire en ligne droite
   balldescent() {
-    const lineMax = boardCasesArray[boardCasesArray.length - 1].line;
+    lineMax = boardCasesArray[boardCasesArray.length - 1].line;
 
     const startDescentInterval = function () {
+      let descentInterval;
       let newBallLineIndex = 0;
       const descent = function () {
         newBallLineIndex = newBallLineIndex + 1;
@@ -137,10 +138,12 @@ class createBoardCl {
         if (
           boardCasesArray.find((cas) => cas.ballPresence === true).line ===
           lineMax
-        )
+        ) {
           clearInterval(descentInterval);
+          const rebound = new ballMovementCl();
+        }
       };
-      descentInterval = setInterval(descent, 1000);
+      descentInterval = setInterval(descent, 500);
     };
     startDescentInterval();
   }
@@ -205,6 +208,85 @@ class showBoardCl {
 class ballMovementCl {
   constructor() {
     this.WhichMove();
+  }
+
+  // On écrit la méthode qui définit de quel côté la balle va rebondir
+  WhichMove() {
+    if (caseAtTheTime.line === lineMax) {
+      if (caseAtTheTime.column === platePosition[0]) {
+        console.log("Up left");
+        this.diagUpLeft();
+      } else if (caseAtTheTime.column === platePosition[1]) {
+        console.log("Up right");
+        this.diagUpRight();
+      } else console.log("FAIL !!!");
+    }
+  }
+
+  diagUpLeft() {
+    const startUpLeftInterval = function () {
+      let blinkInterval;
+      const blink = function () {
+        // On enlève la balle de la la position qu'elle occupe dans le tableau du back JS
+        boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        ).ballPresence = false;
+
+        // On trouve la nouvelle ligne que va occuper la balle (elle remonte d'une ligne et se décalle d'une colonne vers la gauche)
+        const newLine =
+          alphabet[
+            alphabet.findIndex((letter) => letter === caseAtTheTime.line) - 1
+          ];
+        const newColumn = caseAtTheTime.column - 1;
+        boardCasesArray.find(
+          (cas) => cas.column === newColumn && cas.line === newLine
+        ).ballPresence = true;
+
+        // On met à jour la variable qui stocke la position de la balle
+        caseAtTheTime = boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        );
+
+        // On met à jour la représentation visuelle
+        const newBoardDisplay = new showBoardCl();
+      };
+      blinkInterval = setInterval(blink, 500);
+    };
+    startUpLeftInterval();
+  }
+
+  diagUpRight() {
+    const startUpRightInterval = function () {
+      let blinkInterval;
+      const blink = function () {
+        // On enlève la balle de la la position qu'elle occupe dans le tableau du back JS
+        boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        ).ballPresence = false;
+
+        // On trouve la nouvelle ligne que va occuper la balle (elle remonte d'une ligne et se décalle d'une colonne vers la gauche)
+        console.log("case at the time", caseAtTheTime);
+        const newLine =
+          alphabet[
+            alphabet.findIndex((letter) => letter === caseAtTheTime.line) - 1
+          ];
+        const newColumn = caseAtTheTime.column + 1;
+        console.log(newColumn);
+        boardCasesArray.find(
+          (cas) => cas.column === newColumn && cas.line === newLine
+        ).ballPresence = true;
+
+        // On met à jour la variable qui stocke la position de la balle
+        caseAtTheTime = boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        );
+
+        // On met à jour la représentation visuelle
+        const newBoardDisplay = new showBoardCl();
+      };
+      blinkInterval = setInterval(blink, 500);
+    };
+    startUpRightInterval();
   }
 }
 
