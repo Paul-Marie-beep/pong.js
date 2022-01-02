@@ -1,8 +1,56 @@
+:root {
+  --case-height: 5rem;
+  --case-width: 5rem;
+  --case-number: ;
+}
+
 body {
   margin: 0px;
-  height: 100%;
+  height: 100vh;
   background: linear-gradient(to top left, #18ceee, #5577e6);
   background-size: cover;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   position: relative;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(12, 0fr);
+  width: fit-content;
+  margin: auto;
+  margin-top: 10%;
+  border: 1px solid black;
+  border-bottom: none;
+}
+
+.ball {
+  border: 10px solid black;
+  border-radius: 10px;
+  margin: auto;
+  margin-top: 43%;
+  height: 0rem;
+  width: 0rem;
+}
+
+.base {
+  width: fit-content;
+  margin: auto;
+  display: flex;
+  border: 1px solid black;
+  border-top: none;
+}
+
+.case {
+  background-color: blanchedalmond;
+  height: var(--case-height);
+  width: var(--case-width);
+}
+
+.plate {
+  border: 10px solid black;
+  margin-top: 43%;
+}
+
+.hidden {
+  display: none;
 }
