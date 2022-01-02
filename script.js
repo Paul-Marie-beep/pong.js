@@ -38,6 +38,7 @@ const alphabet = [
 let ballInitialColumn;
 let caseAtTheTime;
 let lineMax;
+let reboundType;
 
 class baseCaseCl {
   constructor(position) {
@@ -207,11 +208,10 @@ class showBoardCl {
 
 class ballMovementCl {
   constructor() {
-    this.WhichMove();
+    this.whichMove();
   }
-
   // On écrit la méthode qui définit de quel côté la balle va rebondir
-  WhichMove() {
+  whichMove() {
     if (caseAtTheTime.line === lineMax) {
       if (caseAtTheTime.column === platePosition[0]) {
         console.log("Up left");
@@ -221,6 +221,13 @@ class ballMovementCl {
         this.diagUpRight();
       } else console.log("FAIL !!!");
     }
+
+    if (reboundType === "leftLine-down") this.diagDownRight();
+    if (reboundType === "leftLine-up") this.diagUpRight();
+    if (reboundType === "topLine-left") this.diagDownLeft();
+    if (reboundType === "rightLine-down") this.diagDownLeft();
+    if (reboundType === "rightLine-up") this.diagUpLeft();
+    if (reboundType === "topLine-right") this.diagDownRight();
   }
 
   diagUpLeft() {
@@ -249,6 +256,18 @@ class ballMovementCl {
 
         // On met à jour la représentation visuelle
         const newBoardDisplay = new showBoardCl();
+
+        // On crée la condition d'arrêt pour la méthode
+        // Attention à la gestion des coins, c'est à la fois une rebon sur la gauche et sur le haut !!!!!
+        if (caseAtTheTime.column === 1) {
+          clearInterval(blinkInterval);
+          reboundType = "leftLine-up";
+          const newRebound = new ballMovementCl();
+        } else if (caseAtTheTime.line === "A") {
+          clearInterval(blinkInterval);
+          reboundType = "topLine-left";
+          const newRebound = new ballMovementCl();
+        }
       };
       blinkInterval = setInterval(blink, 500);
     };
@@ -265,13 +284,11 @@ class ballMovementCl {
         ).ballPresence = false;
 
         // On trouve la nouvelle ligne que va occuper la balle (elle remonte d'une ligne et se décalle d'une colonne vers la gauche)
-        console.log("case at the time", caseAtTheTime);
         const newLine =
           alphabet[
             alphabet.findIndex((letter) => letter === caseAtTheTime.line) - 1
           ];
         const newColumn = caseAtTheTime.column + 1;
-        console.log(newColumn);
         boardCasesArray.find(
           (cas) => cas.column === newColumn && cas.line === newLine
         ).ballPresence = true;
@@ -283,10 +300,107 @@ class ballMovementCl {
 
         // On met à jour la représentation visuelle
         const newBoardDisplay = new showBoardCl();
+
+        // On crée la condition d'arrêt
+        if (caseAtTheTime.column === caseNumber) {
+          clearInterval(blinkInterval);
+          reboundType = "rightLine-up";
+          const newRebound = new ballMovementCl();
+        } else if (caseAtTheTime.line === "A") {
+          clearInterval(blinkInterval);
+          reboundType = "topLine-right";
+          const newRebound = new ballMovementCl();
+        }
       };
       blinkInterval = setInterval(blink, 500);
     };
     startUpRightInterval();
+  }
+
+  diagDownRight() {
+    const startDownRightInterval = function () {
+      let blinkInterval;
+      const blink = function () {
+        // On enlève la balle de la la position qu'elle occupe dans le tableau du back JS
+        boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        ).ballPresence = false;
+
+        // On trouve la nouvelle ligne que va occuper la balle (elle remonte d'une ligne et se décalle d'une colonne vers la gauche)
+        const newLine =
+          alphabet[
+            alphabet.findIndex((letter) => letter === caseAtTheTime.line) + 1
+          ];
+        const newColumn = caseAtTheTime.column + 1;
+        boardCasesArray.find(
+          (cas) => cas.column === newColumn && cas.line === newLine
+        ).ballPresence = true;
+
+        // On met à jour la variable qui stocke la position de la balle
+        caseAtTheTime = boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        );
+
+        // On met à jour la représentation visuelle
+        const newBoardDisplay = new showBoardCl();
+
+        // On crée la condition d'arrêt pour la méthode
+        // Attention à la gestion des coins, c'est à la fois une rebon sur la gauche et sur le haut !!!!!
+        if (caseAtTheTime.column === caseNumber) {
+          clearInterval(blinkInterval);
+          reboundType = "rightLine-down";
+          const newRebound = new ballMovementCl();
+        } else if (caseAtTheTime.line === lineMax) {
+          clearInterval(blinkInterval);
+          const newRebound = new ballMovementCl();
+        }
+      };
+      blinkInterval = setInterval(blink, 500);
+    };
+    startDownRightInterval();
+  }
+
+  diagDownLeft() {
+    const startDownLeftInterval = function () {
+      let blinkInterval;
+      const blink = function () {
+        // On enlève la balle de la la position qu'elle occupe dans le tableau du back JS
+        boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        ).ballPresence = false;
+
+        // On trouve la nouvelle ligne que va occuper la balle (elle remonte d'une ligne et se décalle d'une colonne vers la gauche)
+        const newLine =
+          alphabet[
+            alphabet.findIndex((letter) => letter === caseAtTheTime.line) + 1
+          ];
+        const newColumn = caseAtTheTime.column - 1;
+        boardCasesArray.find(
+          (cas) => cas.column === newColumn && cas.line === newLine
+        ).ballPresence = true;
+
+        // On met à jour la variable qui stocke la position de la balle
+        caseAtTheTime = boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        );
+
+        // On met à jour la représentation visuelle
+        const newBoardDisplay = new showBoardCl();
+
+        // On crée la condition d'arrêt pour la méthode
+        // Attention à la gestion des coins, c'est à la fois une rebon sur la gauche et sur le haut !!!!!
+        if (caseAtTheTime.column === 1) {
+          clearInterval(blinkInterval);
+          reboundType = "leftLine-down";
+          const newRebound = new ballMovementCl();
+        } else if (caseAtTheTime.line === lineMax) {
+          clearInterval(blinkInterval);
+          const newRebound = new ballMovementCl();
+        }
+      };
+      blinkInterval = setInterval(blink, 500);
+    };
+    startDownLeftInterval();
   }
 }
 
@@ -297,7 +411,6 @@ class playGameCl {
 
   moveplate() {
     document.addEventListener("keydown", function (event) {
-      console.log(event.key);
       if (event.key === "ArrowLeft") {
         if (platePosition[0] === 1) return;
         platePosition.forEach(function (pos, i) {
