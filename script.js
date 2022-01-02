@@ -36,6 +36,7 @@ const alphabet = [
   "Z",
 ];
 let ballInitialColumn;
+let descentInterval;
 
 class baseCaseCl {
   constructor(position) {
@@ -108,20 +109,35 @@ class createBoardCl {
     ).ballPresence = true;
   }
 
+  // On gère la première descente de la balle qui va se faire en ligne droite
   balldescent() {
-    let newBallLineIndex = 0;
-    // On enlève la balle de la case qu'elle occupait juqu'à présent
-    newBallLineIndex = newBallLineIndex + 1;
-    console.log(newBallLineIndex);
-    boardCasesArray.find(
-      (cas) => cas.ballPresence === true
-    ).ballPresence = false;
-    //  On met la balle dans sa nouvelle case en lui conservant la colonne de départ et en se déplaçant d'une case dans le table des lettres de l'alphabet
-    boardCasesArray.find(
-      (cas) =>
-        cas.line === alphabet[newBallLineIndex] &&
-        cas.column === ballInitialColumn
-    ).ballPresence = true;
+    const lineMax = boardCasesArray[boardCasesArray.length - 1].line;
+
+    const startDescentInterval = function () {
+      let newBallLineIndex = 0;
+      const descent = function () {
+        newBallLineIndex = newBallLineIndex + 1;
+        // On enlève la balle de la case qu'elle occupait jusqu'à présent
+        boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        ).ballPresence = false;
+        //  On met la balle dans sa nouvelle case en lui conservant la colonne de départ et en se déplaçant d'une case dans le table des lettres de l'alphabet
+        boardCasesArray.find(
+          (cas) =>
+            cas.line === alphabet[newBallLineIndex] &&
+            cas.column === ballInitialColumn
+        ).ballPresence = true;
+        const newBoardDisplay = new showBoardCl();
+        //  On arrête la descente une fois qu'on est arrivé en bas de la plage de jeu.
+        if (
+          boardCasesArray.find((cas) => cas.ballPresence === true).line ===
+          lineMax
+        )
+          clearInterval(descentInterval);
+      };
+      descentInterval = setInterval(descent, 1000);
+    };
+    startDescentInterval();
   }
 }
 
@@ -134,7 +150,7 @@ class showBaseCl {
     base.innerHTML = "";
     for (let i = 1; i < baseCasesArray.length + 1; i++) {
       let html;
-      html = `<div class="case base--case base--case-${i}"><div class="plate plate-${i} hidden"></div></div>`;
+      html = `<div class="base--case base--case-${i}"><div class="plate plate-${i} hidden"></div></div>`;
       base.insertAdjacentHTML("beforeend", html);
     }
   }

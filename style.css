@@ -46,9 +46,15 @@ body {
   width: var(--case-width);
 }
 
+.base--case {
+  background-color: blanchedalmond;
+  height: 2rem;
+  width: var(--case-width);
+}
+
 .plate {
   border: 10px solid black;
-  margin-top: 43%;
+  /* margin-top: 43%; */
 }
 
 .hidden {
