@@ -212,12 +212,11 @@ class ballMovementCl {
   }
   // On écrit la méthode qui définit de quel côté la balle va rebondir
   whichMove() {
+    console.log("new move trig");
     if (caseAtTheTime.line === lineMax) {
       if (caseAtTheTime.column === platePosition[0]) {
-        console.log("Up left");
         this.diagUpLeft();
       } else if (caseAtTheTime.column === platePosition[1]) {
-        console.log("Up right");
         this.diagUpRight();
       } else console.log("FAIL !!!");
     }
@@ -231,6 +230,7 @@ class ballMovementCl {
   }
 
   diagUpLeft() {
+    console.log("diagUpLeft");
     const startUpLeftInterval = function () {
       let blinkInterval;
       const blink = function () {
@@ -263,7 +263,8 @@ class ballMovementCl {
           clearInterval(blinkInterval);
           reboundType = "leftLine-up";
           const newRebound = new ballMovementCl();
-        } else if (caseAtTheTime.line === "A") {
+        }
+        if (caseAtTheTime.line === "A") {
           clearInterval(blinkInterval);
           reboundType = "topLine-left";
           const newRebound = new ballMovementCl();
@@ -275,6 +276,7 @@ class ballMovementCl {
   }
 
   diagUpRight() {
+    console.log("diagUpRight");
     const startUpRightInterval = function () {
       let blinkInterval;
       const blink = function () {
@@ -306,7 +308,8 @@ class ballMovementCl {
           clearInterval(blinkInterval);
           reboundType = "rightLine-up";
           const newRebound = new ballMovementCl();
-        } else if (caseAtTheTime.line === "A") {
+        }
+        if (caseAtTheTime.line === "A") {
           clearInterval(blinkInterval);
           reboundType = "topLine-right";
           const newRebound = new ballMovementCl();
@@ -318,6 +321,7 @@ class ballMovementCl {
   }
 
   diagDownRight() {
+    console.log("diagDownRight");
     const startDownRightInterval = function () {
       let blinkInterval;
       const blink = function () {
@@ -350,8 +354,10 @@ class ballMovementCl {
           clearInterval(blinkInterval);
           reboundType = "rightLine-down";
           const newRebound = new ballMovementCl();
-        } else if (caseAtTheTime.line === lineMax) {
+        }
+        if (caseAtTheTime.line === lineMax) {
           clearInterval(blinkInterval);
+          reboundType = "";
           const newRebound = new ballMovementCl();
         }
       };
@@ -361,6 +367,7 @@ class ballMovementCl {
   }
 
   diagDownLeft() {
+    console.log("diagDownLeft");
     const startDownLeftInterval = function () {
       let blinkInterval;
       const blink = function () {
@@ -393,8 +400,10 @@ class ballMovementCl {
           clearInterval(blinkInterval);
           reboundType = "leftLine-down";
           const newRebound = new ballMovementCl();
-        } else if (caseAtTheTime.line === lineMax) {
+        }
+        if (caseAtTheTime.line === lineMax) {
           clearInterval(blinkInterval);
+          reboundType = "";
           const newRebound = new ballMovementCl();
         }
       };
