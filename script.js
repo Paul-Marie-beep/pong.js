@@ -39,6 +39,7 @@ let ballInitialColumn;
 let caseAtTheTime;
 let lineMax;
 let reboundType;
+let newRebound;
 
 class baseCaseCl {
   constructor(position) {
@@ -143,7 +144,8 @@ class createBoardCl {
           lineMax
         ) {
           clearInterval(descentInterval);
-          const rebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.whichMove();
         }
       };
       descentInterval = setInterval(descent, 500);
@@ -209,10 +211,7 @@ class showBoardCl {
 }
 
 class ballMovementCl {
-  constructor() {
-    this.whichMove();
-  }
-  // On écrit la méthode qui définit de quel côté la balle va rebondir
+  // On écrit la méthode qui définit de quel côté la balle va rebondir en cas de contact avec la plateforme
   whichMove() {
     console.log("new decision");
     if (caseAtTheTime.line === lineMax) {
@@ -230,15 +229,9 @@ class ballMovementCl {
         }
       } else console.log("FAIL !!!");
     }
-
-    if (reboundType === "leftLine-down") this.diagDownRight();
-    if (reboundType === "leftLine-up") this.diagUpRight();
-    if (reboundType === "topLine-left") this.diagDownLeft();
-    if (reboundType === "rightLine-down") this.diagDownLeft();
-    if (reboundType === "rightLine-up") this.diagUpLeft();
-    if (reboundType === "topLine-right") this.diagDownRight();
   }
 
+  // Suivent les méthodes qui définissent le comportement de la balle en cas de contact avec le mur
   diagUpLeft() {
     console.log("diagUpLeft");
     const startUpLeftInterval = function () {
@@ -271,18 +264,18 @@ class ballMovementCl {
         // Attention à la gestion des coins, c'est à la fois une rebond sur la gauche et sur le haut !!!!!
         if (caseAtTheTime.column === 1 && caseAtTheTime.line != "A") {
           clearInterval(blinkInterval);
-          reboundType = "leftLine-up";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.diagUpRight();
         }
         if (caseAtTheTime.line === "A" && caseAtTheTime.column != 1) {
           clearInterval(blinkInterval);
-          reboundType = "topLine-left";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.diagDownLeft();
         }
         if (caseAtTheTime.line === "A" && caseAtTheTime.column === 1) {
           clearInterval(blinkInterval);
-          reboundType = "topLine-right";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.diagDownRight();
         }
       };
       blinkInterval = setInterval(blink, 500);
@@ -321,18 +314,18 @@ class ballMovementCl {
         // On crée la condition d'arrêt
         if (caseAtTheTime.column === caseNumber && caseAtTheTime.line != "A") {
           clearInterval(blinkInterval);
-          reboundType = "rightLine-up";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.diagUpLeft();
         }
         if (caseAtTheTime.line === "A" && caseAtTheTime.column != caseNumber) {
           clearInterval(blinkInterval);
-          reboundType = "topLine-right";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.diagDownRight();
         }
         if (caseAtTheTime.line === "A" && caseAtTheTime.column === caseNumber) {
           clearInterval(blinkInterval);
-          reboundType = "topLine-left";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.diagDownLeft();
         }
       };
       blinkInterval = setInterval(blink, 500);
@@ -375,13 +368,13 @@ class ballMovementCl {
           caseAtTheTime.line != lineMax
         ) {
           clearInterval(blinkInterval);
-          reboundType = "rightLine-down";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.diagDownLeft();
         }
         if (caseAtTheTime.line === lineMax) {
           clearInterval(blinkInterval);
-          reboundType = "";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.whichMove();
         }
       };
       blinkInterval = setInterval(blink, 500);
@@ -422,13 +415,13 @@ class ballMovementCl {
         // Si on est sur la ligne la plus en bas, la situation est
         if (caseAtTheTime.column === 1 && caseAtTheTime.line != lineMax) {
           clearInterval(blinkInterval);
-          reboundType = "leftLine-down";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.diagDownRight();
         }
         if (caseAtTheTime.line === lineMax) {
           clearInterval(blinkInterval);
-          reboundType = "";
-          const newRebound = new ballMovementCl();
+          newRebound = new ballMovementCl();
+          newRebound.whichMove();
         }
       };
       blinkInterval = setInterval(blink, 500);
