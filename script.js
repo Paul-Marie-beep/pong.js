@@ -38,7 +38,6 @@ const alphabet = [
 let ballInitialColumn;
 let caseAtTheTime;
 let lineMax;
-let reboundType;
 let newRebound;
 
 class baseCaseCl {
@@ -264,17 +263,14 @@ class ballMovementCl {
         // Attention à la gestion des coins, c'est à la fois une rebond sur la gauche et sur le haut !!!!!
         if (caseAtTheTime.column === 1 && caseAtTheTime.line != "A") {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.diagUpRight();
         }
         if (caseAtTheTime.line === "A" && caseAtTheTime.column != 1) {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.diagDownLeft();
         }
         if (caseAtTheTime.line === "A" && caseAtTheTime.column === 1) {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.diagDownRight();
         }
       };
@@ -314,17 +310,14 @@ class ballMovementCl {
         // On crée la condition d'arrêt
         if (caseAtTheTime.column === caseNumber && caseAtTheTime.line != "A") {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.diagUpLeft();
         }
         if (caseAtTheTime.line === "A" && caseAtTheTime.column != caseNumber) {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.diagDownRight();
         }
         if (caseAtTheTime.line === "A" && caseAtTheTime.column === caseNumber) {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.diagDownLeft();
         }
       };
@@ -368,12 +361,10 @@ class ballMovementCl {
           caseAtTheTime.line != lineMax
         ) {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.diagDownLeft();
         }
         if (caseAtTheTime.line === lineMax) {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.whichMove();
         }
       };
@@ -415,12 +406,10 @@ class ballMovementCl {
         // Si on est sur la ligne la plus en bas, la situation est
         if (caseAtTheTime.column === 1 && caseAtTheTime.line != lineMax) {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.diagDownRight();
         }
         if (caseAtTheTime.line === lineMax) {
           clearInterval(blinkInterval);
-          newRebound = new ballMovementCl();
           newRebound.whichMove();
         }
       };
