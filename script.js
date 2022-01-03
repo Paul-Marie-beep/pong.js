@@ -142,7 +142,7 @@ class showBaseCl {
   }
 }
 
-class showInitialBoardCl {
+class showBoardCl {
   constructor() {
     this.showInitialBoard();
   }
@@ -159,9 +159,7 @@ class showInitialBoardCl {
       }
     });
   }
-}
 
-class showBoardCl {
   showBoard() {
     // On vide la  (ie la div) contenant la balle au préalable. On la vide en remontant à l'élement parent de la la balle et en supprimant le html de la div
     document.querySelector(".ball").parentElement.innerHTML = "";
@@ -467,7 +465,7 @@ class newGameCl {
 
   newShow() {
     newBaseDisplay = new showBaseCl();
-    const newBoardDisplay = new showInitialBoardCl();
+    newBoardDisplay = new showBoardCl();
   }
 
   gameLauncher() {
