@@ -455,21 +455,17 @@ class newGameCl {
   constructor() {
     this.initGame();
     this.newShow();
-    this.gameLauncher();
   }
 
   initGame() {
     const newBase = new createBaseCl();
     const newBoard = new createBoardCl();
+    const gameLaunched = new playGameCl();
   }
 
   newShow() {
     newBaseDisplay = new showBaseCl();
     newBoardDisplay = new showBoardCl();
-  }
-
-  gameLauncher() {
-    const gameLaunched = new playGameCl();
   }
 }
 
