@@ -1,3 +1,3 @@
 # pong.js
 
-Basic game of pong programmed in vanilla Javascript
+Basic game of pong programmed in vanilla Javascript using OOP
