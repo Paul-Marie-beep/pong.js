@@ -39,6 +39,7 @@ let ballInitialColumn;
 let caseAtTheTime;
 let lineMax;
 let newRebound;
+let newBoardDisplay;
 
 class baseCaseCl {
   constructor(position) {
@@ -153,10 +154,6 @@ class showInitialBoardCl {
 }
 
 class showBoardCl {
-  constructor() {
-    this.showBoard();
-  }
-
   showBoard() {
     // On vide la  (ie la div) contenant la balle au préalable. On la vide en remontant à l'élement parent de la la balle et en supprimant le html de la div
     document.querySelector(".ball").parentElement.innerHTML = "";
@@ -217,7 +214,9 @@ class ballMovementCl {
         caseAtTheTime = boardCasesArray.find(
           (cas) => cas.ballPresence === true
         );
-        const newBoardDisplay = new showBoardCl();
+        // On active la représentation graphique
+        newBoardDisplay = new showBoardCl();
+        newBoardDisplay.showBoard();
         //  On arrête la descente une fois qu'on est arrivé en bas de la plage de jeu.
         if (
           boardCasesArray.find((cas) => cas.ballPresence === true).line ===
@@ -259,7 +258,7 @@ class ballMovementCl {
         );
 
         // On met à jour la représentation visuelle
-        const newBoardDisplay = new showBoardCl();
+        newBoardDisplay.showBoard();
 
         // On crée la condition d'arrêt pour la méthode
         // Attention à la gestion des coins, c'est à la fois une rebond sur la gauche et sur le haut !!!!!
@@ -307,7 +306,7 @@ class ballMovementCl {
         );
 
         // On met à jour la représentation visuelle
-        const newBoardDisplay = new showBoardCl();
+        newBoardDisplay.showBoard();
 
         // On crée la condition d'arrêt
         if (caseAtTheTime.column === caseNumber && caseAtTheTime.line != "A") {
@@ -354,7 +353,7 @@ class ballMovementCl {
         );
 
         // On met à jour la représentation visuelle
-        const newBoardDisplay = new showBoardCl();
+        newBoardDisplay.showBoard();
 
         // On crée la condition d'arrêt pour la méthode
         // Attention à la gestion des coins, c'est à la fois une rebon sur la gauche et sur le haut !!!!!
@@ -401,7 +400,7 @@ class ballMovementCl {
         );
 
         // On met à jour la représentation visuelle
-        const newBoardDisplay = new showBoardCl();
+        newBoardDisplay.showBoard();
 
         // On crée la condition d'arrêt pour la méthode
         // Attention à la gestion des coins, c'est à la fois une rebond sur la gauche et sur le haut !!!!!
