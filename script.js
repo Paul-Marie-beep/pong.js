@@ -40,6 +40,7 @@ let caseAtTheTime;
 let lineMax;
 let newRebound;
 let newBoardDisplay;
+let newBaseDisplay;
 
 class baseCaseCl {
   constructor(position) {
@@ -131,6 +132,13 @@ class showBaseCl {
     platePosition.forEach(function (pos) {
       document.querySelector(`.plate-${pos}`).classList.remove("hidden");
     });
+  }
+
+  showPlateMoving() {
+    document
+      .querySelectorAll(".plate")
+      .forEach((div) => div.classList.add("hidden"));
+    this.showPlate();
   }
 }
 
@@ -432,14 +440,14 @@ class playGameCl {
         platePosition.forEach(function (pos, i) {
           platePosition[i] = pos - 1;
         });
-        const newDisplay = new showBaseCl();
+        newBaseDisplay.showPlateMoving();
       }
       if (event.key === "ArrowRight") {
         if (platePosition[1] === baseCasesArray.length) return;
         platePosition.forEach(function (pos, i) {
           platePosition[i] = pos + 1;
         });
-        const newDisplay = new showBaseCl();
+        newBaseDisplay.showPlateMoving();
       }
     });
   }
@@ -458,7 +466,7 @@ class newGameCl {
   }
 
   newShow() {
-    const newBaseDisplay = new showBaseCl();
+    newBaseDisplay = new showBaseCl();
     const newBoardDisplay = new showInitialBoardCl();
   }
 
