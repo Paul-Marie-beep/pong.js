@@ -88,7 +88,6 @@ class createBoardCl {
 
     this.createJsBoardCases();
     this.setBall();
-    this.balldescent();
   }
 
   createJsBoardCases() {
@@ -109,47 +108,7 @@ class createBoardCl {
     boardCasesArray.find(
       (cas) => cas.column === ballInitialColumn
     ).ballPresence = true;
-  }
-
-  // On gère la première descente de la balle qui va se faire en ligne droite
-  balldescent() {
-    lineMax = boardCasesArray[boardCasesArray.length - 1].line;
-
-    const startDescentInterval = function () {
-      let descentInterval;
-      let newBallLineIndex = 0;
-      const descent = function () {
-        newBallLineIndex = newBallLineIndex + 1;
-        // On enlève la balle de la case qu'elle occupait jusqu'à présent
-        boardCasesArray
-          .find((cas) => cas.ballPresence === true)
-          .toggleBallPresence();
-        //  On met la balle dans sa nouvelle case en lui conservant la colonne de départ et en se déplaçant d'une case dans le table des lettres de l'alphabet
-        boardCasesArray
-          .find(
-            (cas) =>
-              cas.line === alphabet[newBallLineIndex] &&
-              cas.column === ballInitialColumn
-          )
-          .toggleBallPresence();
-
-        caseAtTheTime = boardCasesArray.find(
-          (cas) => cas.ballPresence === true
-        );
-        const newBoardDisplay = new showBoardCl();
-        //  On arrête la descente une fois qu'on est arrivé en bas de la plage de jeu.
-        if (
-          boardCasesArray.find((cas) => cas.ballPresence === true).line ===
-          lineMax
-        ) {
-          clearInterval(descentInterval);
-          newRebound = new ballMovementCl();
-          newRebound.whichMove();
-        }
-      };
-      descentInterval = setInterval(descent, 500);
-    };
-    startDescentInterval();
+    newRebound = new ballMovementCl();
   }
 }
 
@@ -210,6 +169,9 @@ class showBoardCl {
 }
 
 class ballMovementCl {
+  constructor() {
+    this.balldescent();
+  }
   // On écrit la méthode qui définit de quel côté la balle va rebondir en cas de contact avec la plateforme
   whichMove() {
     console.log("new decision");
@@ -228,6 +190,46 @@ class ballMovementCl {
         }
       } else console.log("FAIL !!!");
     }
+  }
+
+  // On gère la première descente de la balle qui va se faire en ligne droite
+  balldescent() {
+    lineMax = boardCasesArray[boardCasesArray.length - 1].line;
+
+    const startDescentInterval = function () {
+      let descentInterval;
+      let newBallLineIndex = 0;
+      const blink = function () {
+        newBallLineIndex = newBallLineIndex + 1;
+        // On enlève la balle de la case qu'elle occupait jusqu'à présent
+        boardCasesArray
+          .find((cas) => cas.ballPresence === true)
+          .toggleBallPresence();
+        //  On met la balle dans sa nouvelle case en lui conservant la colonne de départ et en se déplaçant d'une case dans le table des lettres de l'alphabet
+        boardCasesArray
+          .find(
+            (cas) =>
+              cas.line === alphabet[newBallLineIndex] &&
+              cas.column === ballInitialColumn
+          )
+          .toggleBallPresence();
+
+        caseAtTheTime = boardCasesArray.find(
+          (cas) => cas.ballPresence === true
+        );
+        const newBoardDisplay = new showBoardCl();
+        //  On arrête la descente une fois qu'on est arrivé en bas de la plage de jeu.
+        if (
+          boardCasesArray.find((cas) => cas.ballPresence === true).line ===
+          lineMax
+        ) {
+          clearInterval(descentInterval);
+          newRebound.whichMove();
+        }
+      };
+      descentInterval = setInterval(blink, 500);
+    };
+    startDescentInterval();
   }
 
   // Suivent les méthodes qui définissent le comportement de la balle en cas de contact avec le mur
