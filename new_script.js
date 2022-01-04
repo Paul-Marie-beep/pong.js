@@ -79,6 +79,9 @@ class GameCl {
     this.setBase();
     this.createJsBoardCases();
     this.setBall();
+    this.buildBase();
+    this.showPlateMoving();
+    this.buildBoard();
   }
 
   // On commence  par créer le backend du jeu
@@ -119,7 +122,54 @@ class GameCl {
 
   // On crée le front end
 
-  // On va construire la base dans laquelle la palette va bouger
+  // On va construire la base dans laquelle la palette va bouger``
+  buildBase() {
+    base.innerHTML = "";
+    for (let i = 1; i < this.baseCasesArray.length + 1; i++) {
+      const html = `<div class="base--case base--case-${i}"><div class="plate plate-${i} hidden"></div></div>`;
+      base.insertAdjacentHTML("beforeend", html);
+    }
+  }
+
+  // On cache toutes cases de la base ou peu se  du jeu puis on découvre celle où se situe effectivement la palette
+  showPlateMoving() {
+    document
+      .querySelectorAll(".plate")
+      .forEach((div) => div.classList.add("hidden"));
+    this.showPlate();
+  }
+
+  // On montre les mouvements de la palette: On enlève la classe hidden aux cases dans laquelle se trouve désormais la palette
+  showPlate() {
+    this.platePosition.forEach(function (pos) {
+      document.querySelector(`.plate-${pos}`).classList.remove("hidden");
+    });
+  }
+
+  // On construit les cases où va évoluer la balle
+  buildBoard() {
+    board.innerHTML = "";
+    this.boardCasesArray.forEach(function (cas) {
+      if (cas.ballPresence) {
+        const html = `<div class="case line-${cas.line} column-${cas.column}"><div class="ball"></div></div>`;
+        board.insertAdjacentHTML("beforeend", html);
+      } else {
+        const html = `<div class="case line-${cas.line} column-${cas.column}"></div></div>`;
+        board.insertAdjacentHTML("beforeend", html);
+      }
+    });
+  }
+
+  // On met à jour la représentation graphique en fonction des mouvements de la balle
+  showBoard() {
+    // On vide la  (ie la div) contenant la balle au préalable. On la vide en remontant à l'élement parent de la la balle et en supprimant le html de la div
+    document.querySelector(".ball").parentElement.innerHTML = "";
+
+    // On sélection la case où l'on doit mettre la balle et on la rajoute. On soustrait 1 car on la sélectionne par l'index d'une nodeliste, index qui commence donc à 0.
+    document.querySelectorAll(`.line-${caseAtTheTime.line}`)[
+      caseAtTheTime.column - 1
+    ].innerHTML = '<div class="ball"></div>';
+  }
 }
 
 const newGame = new GameCl(fixedForNowColumnNumber, fixedForNowlineNumber);
