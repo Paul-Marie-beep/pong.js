@@ -5,23 +5,17 @@ const fixedForNowColumnNumber = 12;
 const fixedForNowlineNumber = 8;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-class CaseCl {
+class baseCaseCl {
   constructor(column) {
     this.column = column;
-  }
-}
-
-class baseCaseCl extends CaseCl {
-  constructor(column) {
-    super(column);
     this.platePresence = false;
   }
 }
 
-class boardCaseCl extends CaseCl {
+class boardCaseCl {
   constructor(line, column) {
-    super(column);
     this.line = line;
+    this.column = column;
     this.ballPresence = false;
   }
 
@@ -111,8 +105,8 @@ class GameCl {
 
   // On crée les cases dans lauquelle la balle va se mouvoir
   createJsBoardCases() {
-    for (let i = 1; i <= this.columnNumber; i++) {
-      for (let j = 1; j <= this.lineNumber; j++) {
+    for (let i = 1; i <= this.lineNumber; i++) {
+      for (let j = 1; j <= this.columnNumber; j++) {
         this.boardCasesArray.push(new boardCaseCl(this.alphabet[i - 1], j));
       }
     }
@@ -125,6 +119,7 @@ class GameCl {
     };
     // On assigne une colonne de départ au hasard pour la balle, attendu qu'elle part forcément de la première colonne.
     const ballInitialColumn = randomInt(1, this.columnNumber);
+    console.log(this.boardCasesArray, ballInitialColumn);
     this.boardCasesArray.find(
       (cas) => cas.column === ballInitialColumn
     ).ballPresence = true;
