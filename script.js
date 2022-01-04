@@ -39,8 +39,7 @@ let ballInitialColumn;
 let caseAtTheTime;
 let lineMax;
 let newRebound;
-let newBoardDisplay;
-let newBaseDisplay;
+let newDisplay;
 
 class baseCaseCl {
   constructor(position) {
@@ -114,10 +113,11 @@ class createBoardCl {
   }
 }
 
-class showBaseCl {
+class showCl {
   constructor() {
     this.showBase();
     this.showPlate();
+    this.showInitialBoard();
   }
   showBase() {
     base.innerHTML = "";
@@ -139,12 +139,6 @@ class showBaseCl {
       .querySelectorAll(".plate")
       .forEach((div) => div.classList.add("hidden"));
     this.showPlate();
-  }
-}
-
-class showBoardCl {
-  constructor() {
-    this.showInitialBoard();
   }
 
   showInitialBoard() {
@@ -177,7 +171,6 @@ class ballMovementCl {
   }
   // On écrit la méthode qui définit de quel côté la balle va rebondir en cas de contact avec la plateforme
   whichMove() {
-    console.log("new decision");
     if (caseAtTheTime.line === lineMax) {
       if (caseAtTheTime.column === platePosition[0]) {
         if (caseAtTheTime.column === 1) {
@@ -221,8 +214,7 @@ class ballMovementCl {
           (cas) => cas.ballPresence === true
         );
         // On active la représentation graphique
-        newBoardDisplay = new showBoardCl();
-        newBoardDisplay.showBoard();
+        newDisplay.showBoard();
         //  On arrête la descente une fois qu'on est arrivé en bas de la plage de jeu.
         if (
           boardCasesArray.find((cas) => cas.ballPresence === true).line ===
@@ -239,7 +231,6 @@ class ballMovementCl {
 
   // Suivent les méthodes qui définissent le comportement de la balle en cas de contact avec le mur
   diagUpLeft() {
-    console.log("diagUpLeft");
     const startUpLeftInterval = function () {
       let blinkInterval;
       const blink = function () {
@@ -264,7 +255,7 @@ class ballMovementCl {
         );
 
         // On met à jour la représentation visuelle
-        newBoardDisplay.showBoard();
+        newDisplay.showBoard();
 
         // On crée la condition d'arrêt pour la méthode
         // Attention à la gestion des coins, c'est à la fois une rebond sur la gauche et sur le haut !!!!!
@@ -287,7 +278,6 @@ class ballMovementCl {
   }
 
   diagUpRight() {
-    console.log("diagUpRight");
     const startUpRightInterval = function () {
       let blinkInterval;
       const blink = function () {
@@ -312,7 +302,7 @@ class ballMovementCl {
         );
 
         // On met à jour la représentation visuelle
-        newBoardDisplay.showBoard();
+        newDisplay.showBoard();
 
         // On crée la condition d'arrêt
         if (caseAtTheTime.column === caseNumber && caseAtTheTime.line != "A") {
@@ -334,7 +324,6 @@ class ballMovementCl {
   }
 
   diagDownRight() {
-    console.log("diagDownRight");
     const startDownRightInterval = function () {
       let blinkInterval;
       const blink = function () {
@@ -359,7 +348,7 @@ class ballMovementCl {
         );
 
         // On met à jour la représentation visuelle
-        newBoardDisplay.showBoard();
+        newDisplay.showBoard();
 
         // On crée la condition d'arrêt pour la méthode
         // Attention à la gestion des coins, c'est à la fois une rebon sur la gauche et sur le haut !!!!!
@@ -381,7 +370,6 @@ class ballMovementCl {
   }
 
   diagDownLeft() {
-    console.log("diagDownLeft");
     const startDownLeftInterval = function () {
       let blinkInterval;
       const blink = function () {
@@ -406,7 +394,7 @@ class ballMovementCl {
         );
 
         // On met à jour la représentation visuelle
-        newBoardDisplay.showBoard();
+        newDisplay.showBoard();
 
         // On crée la condition d'arrêt pour la méthode
         // Attention à la gestion des coins, c'est à la fois une rebond sur la gauche et sur le haut !!!!!
@@ -438,14 +426,14 @@ class playGameCl {
         platePosition.forEach(function (pos, i) {
           platePosition[i] = pos - 1;
         });
-        newBaseDisplay.showPlateMoving();
+        newDisplay.showPlateMoving();
       }
       if (event.key === "ArrowRight") {
         if (platePosition[1] === baseCasesArray.length) return;
         platePosition.forEach(function (pos, i) {
           platePosition[i] = pos + 1;
         });
-        newBaseDisplay.showPlateMoving();
+        newDisplay.showPlateMoving();
       }
     });
   }
@@ -461,12 +449,10 @@ class newGameCl {
     const newBase = new createBaseCl();
     const newBoard = new createBoardCl();
     const gameLaunched = new playGameCl();
+    newDisplay = new showCl();
   }
 
-  newShow() {
-    newBaseDisplay = new showBaseCl();
-    newBoardDisplay = new showBoardCl();
-  }
+  newShow() {}
 }
 
 const newGame = new newGameCl();
