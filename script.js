@@ -62,9 +62,14 @@ class boardCaseCl {
   }
 }
 
-class createBaseCl {
+class createGameCl {
   constructor() {
     this.casenumber = caseNumber;
+    this.height = 8;
+    this.numberOfBoardCases = caseNumber * this.height;
+
+    this.createJsBoardCases();
+    this.setBall();
 
     this.createJsBaseCases();
     this.setBase();
@@ -79,16 +84,6 @@ class createBaseCl {
   setBase() {
     platePosition.unshift(this.casenumber / 2);
     platePosition.push(this.casenumber / 2 + 1);
-  }
-}
-
-class createBoardCl {
-  constructor() {
-    this.height = 8;
-    this.numberOfBoardCases = caseNumber * this.height;
-
-    this.createJsBoardCases();
-    this.setBall();
   }
 
   createJsBoardCases() {
@@ -414,8 +409,14 @@ class ballMovementCl {
   }
 }
 
-class playGameCl {
+class GameCl {
   constructor() {
+    this.initGame();
+  }
+
+  initGame() {
+    const newCreatedGame = new createGameCl();
+    newDisplay = new showCl();
     this.moveplate();
   }
 
@@ -439,20 +440,4 @@ class playGameCl {
   }
 }
 
-class newGameCl {
-  constructor() {
-    this.initGame();
-    this.newShow();
-  }
-
-  initGame() {
-    const newBase = new createBaseCl();
-    const newBoard = new createBoardCl();
-    const gameLaunched = new playGameCl();
-    newDisplay = new showCl();
-  }
-
-  newShow() {}
-}
-
-const newGame = new newGameCl();
+const newGame = new GameCl();
