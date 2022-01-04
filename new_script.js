@@ -19,7 +19,7 @@ class baseCaseCl extends CaseCl {
 }
 
 class boardCaseCl extends CaseCl {
-  constructor(column, line) {
+  constructor(line, column) {
     super(column);
     this.line = line;
     this.ballPresence = false;
@@ -70,10 +70,17 @@ class GameCl {
   ];
   boardCasesArray = [];
   baseCasesArray = [];
+  lineMax;
+  // On initialise newLine à 0 parce que c'est sa position initiale pour la première descente
+  newLine = 1;
+  newColumn;
+  caseAtTheTime;
+  stopCondition;
+  descentInterval;
 
-  constructor(columnNumber, lineNumber) {
-    this.columnNumber = columnNumber;
+  constructor(lineNumber, columnNumber) {
     this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber;
 
     this.createJsBaseCases();
     this.setBase();
@@ -82,8 +89,11 @@ class GameCl {
     this.buildBase();
     this.showPlateMoving();
     this.buildBoard();
+    this.calcLineMax();
+    // this.ballInitialDescent();
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////
   // On commence  par créer le backend du jeu
 
   // On crée la base dans laquelle la palette va se mouvoir
@@ -101,8 +111,8 @@ class GameCl {
 
   // On crée les cases dans lauquelle la balle va se mouvoir
   createJsBoardCases() {
-    for (let i = 1; i <= this.lineNumber; i++) {
-      for (let j = 1; j <= this.columnNumber; j++) {
+    for (let i = 1; i <= this.columnNumber; i++) {
+      for (let j = 1; j <= this.lineNumber; j++) {
         this.boardCasesArray.push(new boardCaseCl(this.alphabet[i - 1], j));
       }
     }
@@ -115,11 +125,12 @@ class GameCl {
     };
     // On assigne une colonne de départ au hasard pour la balle, attendu qu'elle part forcément de la première colonne.
     const ballInitialColumn = randomInt(1, this.columnNumber);
-    this.baseCasesArray.find(
+    this.boardCasesArray.find(
       (cas) => cas.column === ballInitialColumn
     ).ballPresence = true;
   }
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////
   // On crée le front end
 
   // On va construire la base dans laquelle la palette va bouger``
@@ -170,6 +181,61 @@ class GameCl {
       caseAtTheTime.column - 1
     ].innerHTML = '<div class="ball"></div>';
   }
+
+  ///////////////////////////////////////////////////////////////////////////////////////////////// On fait bouger la balle
+
+  // On commence par gérer la première descente de la balle quand elle est lâchée du haut de la boîte
+
+  // On calcule la ligne maximale que peut atteindre la balle.
+  calcLineMax() {
+    this.lineMax = this.boardCasesArray[this.boardCasesArray.length - 1].line;
+  }
+
+  Blink() {
+    // On enlève la balle de la case qu'elle occupait jusqu'à présent
+    this.boardCasesArray
+      .find((cas) => cas.ballPresence === true)
+      .toggleBallPresence();
+
+    //  On met la balle dans sa nouvelle case
+    this.boardCasesArray
+      .find((cas) => cas.column === this.newColumn && cas.line === this.newLine)
+      .toggleBallPresence();
+
+    //  On met à jour la variable qui stocke la position de la case avec la nouvelle position
+    this.caseAtTheTime = this.boardCasesArray.find(
+      (cas) => cas.ballPresence === true
+    );
+
+    // On met à jour la représentations graphique
+    this.showBoard();
+
+    // On place une conditions pour arrêter l'intervalle dans lequel sera placée la fonction
+    if (this.stopCondition) {
+      clearInterval(this.descentInterval);
+      this.executeNextMove();
+    }
+  }
+
+  //   ballInitialDescent() {
+  //     console.log("case at the time", this.caseAtTheTime);
+  //     this.newColumn = this.ballInitialColumn;
+  //     this.newLine =
+  //       this.alphabet[
+  //         this.alphabet.findIndex(
+  //           (letter) => letter === this.caseAtTheTime.line
+  //         ) + 1
+  //       ];
+  //     this.stopCondition =
+  //       this.boardCasesArray.find((cas) => cas.ballPresence === true).line ===
+  //       this.lineMax;
+
+  //     this.descentInterval = setInterval(this.Blink.bind(this), 500);
+  //   }
+
+  //   executeNextMove() {
+  //     console.log("execute next move");
+  //   }
 }
 
-const newGame = new GameCl(fixedForNowColumnNumber, fixedForNowlineNumber);
+const newGame = new GameCl(fixedForNowlineNumber, fixedForNowColumnNumber);
