@@ -71,6 +71,7 @@ class GameCl {
   caseAtTheTime;
   stopCondition;
   descentInterval;
+  moveType;
 
   constructor(lineNumber, columnNumber) {
     this.lineNumber = lineNumber;
@@ -191,12 +192,15 @@ class GameCl {
     this.lineMax = this.boardCasesArray[this.boardCasesArray.length - 1].line;
   }
 
+  // On programme la fonction qui définit quel mouvement va effectuer
   Blink() {
     // On enlève la balle de la case qu'elle occupait jusqu'à présent
     this.boardCasesArray
       .find((cas) => cas.ballPresence === true)
       .toggleBallPresence();
 
+    // On choisit l'itérateur qui va nous donner la nouvelle position de la balle
+    this.choseMoveIterator();
     //  On met la balle dans sa nouvelle case
     this.boardCasesArray
       .find((cas) => cas.column === this.newColumn && cas.line === this.newLine)
@@ -205,37 +209,67 @@ class GameCl {
     this.caseAtTheTime = this.boardCasesArray.find(
       (cas) => cas.ballPresence === true
     );
-
     // On met à jour la représentations graphique
     this.showBoard();
-    console.log("blink executed", this.caseAtTheTime);
-    // On place une conditions pour arrêter l'intervalle dans lequel sera placée la fonction
-    if (this.stopCondition) {
+    // On place une conditions pour arrêter l'intervalle dans lequel sera placée la fonction. On la chosit grâce à la fonction dans la paranthèse.
+    if (this.choseStopCondition()) {
       clearInterval(this.descentInterval);
       this.executeNextMove();
     }
   }
 
   ballInitialDescent() {
-    // console.log("case at the time", this.caseAtTheTime);
     this.newColumn = this.caseAtTheTime.column;
-    // console.log("new column", this.newColumn);
+    this.moveType = "descent";
+    this.descentInterval = setInterval(this.Blink.bind(this), 500);
+  }
 
+  ballInitialDescentIterator() {
     this.newLine =
       this.alphabet[
         this.alphabet.findIndex(
           (letter) => letter === this.caseAtTheTime.line
         ) + 1
       ];
-    this.stopCondition =
-      this.boardCasesArray.find((cas) => cas.ballPresence === true).line ===
-      this.lineMax;
+  }
 
-    this.descentInterval = setInterval(this.Blink.bind(this), 500);
+  ballInitialDescentStopCondition() {
+    return (
+      this.boardCasesArray.find((cas) => cas.ballPresence === true).line ===
+      this.lineMax
+    );
+  }
+
+  diagUpRight() {}
+
+  diagUpLeft() {}
+
+  choseMoveIterator() {
+    if ((this.moveType = "descent")) this.ballInitialDescentIterator();
+  }
+
+  choseStopCondition() {
+    if ((this.moveType = "descent"))
+      return this.ballInitialDescentStopCondition();
   }
 
   executeNextMove() {
     console.log("execute next move");
+    if (this.caseAtTheTime.line === this.lineMax) {
+      if (this.caseAtTheTime.column === this.platePosition[0]) {
+        if (this.caseAtTheTime.column === 1) {
+          this.diagUpRight();
+        } else {
+          this.diagUpLeft();
+        }
+      } else if (this.caseAtTheTime.column === this.platePosition[1]) {
+        if (this.caseAtTheTime.column === this.columnNumber) {
+          this.diagUpLeft();
+        } else {
+          this.diagUpRight();
+        }
+      } else console.log("FAIL !!!");
+    }
   }
 }
 
