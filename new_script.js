@@ -82,6 +82,7 @@ class GameCl {
     this.createJsBoardCases();
     this.setBall();
     this.buildBase();
+    this.moveplate();
     this.showPlateMoving();
     this.buildBoard();
     this.calcLineMax();
@@ -181,6 +182,27 @@ class GameCl {
     document.querySelectorAll(`.line-${this.caseAtTheTime.line}`)[
       this.caseAtTheTime.column - 1
     ].innerHTML = '<div class="ball"></div>';
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // On fait bouger la plateforme
+  moveplate() {
+    document.addEventListener("keydown", this.listenerMethod.bind(this));
+  }
+
+  // On utilise une méthode séparée pour la fonction de l'event listener pour pouvoir lui faire passer un paramètre tout en bindant this à la classe game
+  listenerMethod(event) {
+    if (event.key === "ArrowLeft") {
+      if (this.platePosition[0] === 1) return;
+      this.platePosition.forEach((pos, i) => (this.platePosition[i] = pos - 1));
+      console.log(this.platePosition);
+      this.showPlateMoving();
+    }
+    if (event.key === "ArrowRight") {
+      if (this.platePosition[1] === this.baseCasesArray.length) return;
+      this.platePosition.forEach((pos, i) => (this.platePosition[i] = pos + 1));
+      this.showPlateMoving();
+    }
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////// On fait bouger la balle
