@@ -40,13 +40,13 @@ body {
 }
 
 .case {
-  background-color: blanchedalmond;
+  background-color: white;
   height: var(--case-height);
   width: var(--case-width);
 }
 
 .base--case {
-  background-color: blanchedalmond;
+  background-color: white;
   height: 2rem;
   width: var(--case-width);
 }
@@ -58,4 +58,41 @@ body {
 
 .hidden {
   display: none;
+}
+
+.popup {
+  width: 75%;
+  height: 60%;
+  background-color: blanchedalmond;
+  margin: auto;
+  position: fixed;
+  top: 33%;
+  left: 12.5%;
+  border: 2px solid red;
+}
+
+.defeat-title {
+  color: red;
+  font-size: 9rem;
+  font-weight: bolder;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  margin: auto;
+  margin-top: 6rem;
+  width: fit-content;
+}
+
+.popup-button {
+  height: 4rem;
+  background-color: greenyellow;
+  border: 2 px solid blue;
+  border-radius: 10px;
+  width: fit-content;
+  margin: auto;
+  margin-top: 5rem;
+}
+
+.btn-lnk {
+  text-decoration: none;
+  color: turquoise;
+  font-weight: bold;
 }

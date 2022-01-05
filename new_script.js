@@ -31,6 +31,8 @@ class boardCaseCl {
 
 const base = document.querySelector(".base");
 const board = document.querySelector(".board");
+const defeatPopUp = document.querySelector(".defeat-popup");
+const defeatTitle = document.querySelector(".defeat-title");
 
 class GameCl {
   platePosition = [];
@@ -264,7 +266,7 @@ class GameCl {
     );
   }
 
-  // On écrit nos fonctions pour les autres types de mouvements qui seront nécessairement diagonaux
+  // On écrit nos méthodes pour les autres types de mouvements qui seront nécessairement diagonaux. Cf. la méthode initiale descent pour une meilleure compréhension, le comportement des méthodes suivantes en découle.
   diagUpRight() {
     this.moveType = "upRight";
     this.descentInterval = setInterval(this.blink.bind(this), 500);
@@ -393,7 +395,7 @@ class GameCl {
         } else {
           this.diagUpRight();
         }
-      } else console.log("FAIL !!!");
+      } else this.defeat();
     }
 
     if (this.moveType === "upRight") {
@@ -437,6 +439,19 @@ class GameCl {
       this.caseAtTheTime.column === this.columnNumber
     )
       this.diagDownLeft();
+  }
+
+  // Qu'est-ce qui se passe en cas de défaite ?
+  defeat() {
+    console.log("Loser !!");
+    defeatPopUp.classList.remove("hidden");
+    setInterval(this.defeatBlink.bind(globalThis), 400);
+    document.querySelector(".ball").classList.add("hidden");
+    // On ne peut pas utiliser de constante globale pour la balle car on doit la sélectionner en "temps réel" et non au début de l'exécution du programme.
+  }
+
+  defeatBlink() {
+    defeatTitle.classList.toggle("hidden");
   }
 }
 
