@@ -263,7 +263,6 @@ class GameCl {
   }
 
   diagUpRight() {
-    console.log("up right lancé");
     this.moveType = "upRight";
     this.descentInterval = setInterval(this.Blink.bind(this), 500);
   }
@@ -289,17 +288,41 @@ class GameCl {
     );
   }
 
-  diagUpLeft() {}
+  diagUpLeft() {
+    console.log("up left lancé");
+    this.moveType = "upLeft";
+    this.descentInterval = setInterval(this.Blink.bind(this), 500);
+  }
+
+  upLeftIterator() {
+    this.newLine =
+      this.alphabet[
+        this.alphabet.findIndex(
+          (letter) => letter === this.caseAtTheTime.line
+        ) - 1
+      ];
+    this.newColumn = this.caseAtTheTime.column - 1;
+  }
+
+  upLeftStopCondition() {
+    return (
+      (this.caseAtTheTime.column === 1 && this.caseAtTheTime.line != "A") ||
+      (this.caseAtTheTime.line === "A" && this.caseAtTheTime.column != 1) ||
+      (this.caseAtTheTime.line === "A" && this.caseAtTheTime.column === 1)
+    );
+  }
 
   choseMoveIterator() {
     if (this.moveType === "descent") this.ballInitialDescentIterator();
     if (this.moveType === "upRight") this.upRightIterator();
+    if (this.moveType === "upLeft") this.upLeftIterator();
   }
 
   choseStopCondition() {
     if (this.moveType === "descent")
       return this.ballInitialDescentStopCondition();
     if (this.moveType === "upRight") return this.upRightStopCondition();
+    if (this.moveType === "upLeft") return this.upLeftStopCondition();
   }
 
   executeNextMove() {
@@ -307,7 +330,6 @@ class GameCl {
     if (this.caseAtTheTime.line === this.lineMax) {
       if (this.caseAtTheTime.column === this.platePosition[0]) {
         if (this.caseAtTheTime.column === 1) {
-          console.log("mouchard 1");
           this.diagUpRight();
         } else {
           this.diagUpLeft();
@@ -316,7 +338,6 @@ class GameCl {
         if (this.caseAtTheTime.column === this.columnNumber) {
           this.diagUpLeft();
         } else {
-          console.log("mouchard 2");
           this.diagUpRight();
         }
       } else console.log("FAIL !!!");
