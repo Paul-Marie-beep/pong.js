@@ -195,7 +195,6 @@ class GameCl {
     if (event.key === "ArrowLeft") {
       if (this.platePosition[0] === 1) return;
       this.platePosition.forEach((pos, i) => (this.platePosition[i] = pos - 1));
-      console.log(this.platePosition);
       this.showPlateMoving();
     }
     if (event.key === "ArrowRight") {
@@ -215,7 +214,7 @@ class GameCl {
   }
 
   // On programme la fonction qui définit quel mouvement va effectuer
-  Blink() {
+  blink() {
     // On enlève la balle de la case qu'elle occupait jusqu'à présent
     this.boardCasesArray
       .find((cas) => cas.ballPresence === true)
@@ -240,12 +239,14 @@ class GameCl {
     }
   }
 
+  // Fontion qui lance la  descente initale: particulière car s'effectue en diagonale
   ballInitialDescent() {
     this.newColumn = this.caseAtTheTime.column;
     this.moveType = "descent";
-    this.descentInterval = setInterval(this.Blink.bind(this), 500);
+    this.descentInterval = setInterval(this.blink.bind(this), 500);
   }
 
+  // Itérateur pour la descente verticale
   ballInitialDescentIterator() {
     this.newLine =
       this.alphabet[
@@ -255,6 +256,7 @@ class GameCl {
       ];
   }
 
+  // Condition d'arrêt du mouvement pour la descente verticale
   ballInitialDescentStopCondition() {
     return (
       this.boardCasesArray.find((cas) => cas.ballPresence === true).line ===
@@ -262,9 +264,10 @@ class GameCl {
     );
   }
 
+  // On écrit nos fonctions pour les autres types de mouvements qui seront nécessairement diagonaux
   diagUpRight() {
     this.moveType = "upRight";
-    this.descentInterval = setInterval(this.Blink.bind(this), 500);
+    this.descentInterval = setInterval(this.blink.bind(this), 500);
   }
 
   upRightIterator() {
@@ -289,9 +292,8 @@ class GameCl {
   }
 
   diagUpLeft() {
-    console.log("up left lancé");
     this.moveType = "upLeft";
-    this.descentInterval = setInterval(this.Blink.bind(this), 500);
+    this.descentInterval = setInterval(this.blink.bind(this), 500);
   }
 
   upLeftIterator() {
@@ -312,21 +314,72 @@ class GameCl {
     );
   }
 
+  diagDownLeft() {
+    this.moveType = "downLeft";
+    this.descentInterval = setInterval(this.blink.bind(this), 500);
+  }
+
+  downLeftIterator() {
+    this.newLine =
+      this.alphabet[
+        this.alphabet.findIndex(
+          (letter) => letter === this.caseAtTheTime.line
+        ) + 1
+      ];
+    this.newColumn = this.caseAtTheTime.column - 1;
+  }
+
+  downLeftStopCondition() {
+    return (
+      (this.caseAtTheTime.column === 1 &&
+        this.caseAtTheTime.line != this.lineMax) ||
+      this.caseAtTheTime.line === this.lineMax
+    );
+  }
+
+  diagDownRight() {
+    this.moveType = "downRight";
+    this.descentInterval = setInterval(this.blink.bind(this), 500);
+  }
+
+  downRightIterator() {
+    this.newLine =
+      this.alphabet[
+        this.alphabet.findIndex(
+          (letter) => letter === this.caseAtTheTime.line
+        ) + 1
+      ];
+    this.newColumn = this.caseAtTheTime.column + 1;
+  }
+
+  downRightStopCondition() {
+    return (
+      this.caseAtTheTime.column === this.columnNumber ||
+      this.caseAtTheTime.line === this.lineMax
+    );
+  }
+
+  // Cette fonction nous permet d'injecter le bon itérateur dans la fonction blink
   choseMoveIterator() {
     if (this.moveType === "descent") this.ballInitialDescentIterator();
     if (this.moveType === "upRight") this.upRightIterator();
     if (this.moveType === "upLeft") this.upLeftIterator();
+    if (this.moveType === "downLeft") this.downLeftIterator();
+    if (this.moveType === "downRight") this.downRightIterator();
   }
 
+  // Cette fonction nous permet de sélectionner les bonnes conditions d'arrêt à renvoyer dans la fonction blink Chaque fonction particulière retourne les conditions voulues
   choseStopCondition() {
     if (this.moveType === "descent")
       return this.ballInitialDescentStopCondition();
     if (this.moveType === "upRight") return this.upRightStopCondition();
     if (this.moveType === "upLeft") return this.upLeftStopCondition();
+    if (this.moveType === "downLeft") return this.downLeftStopCondition();
+    if (this.moveType === "downRight") return this.downRightStopCondition();
   }
 
+  // Cette fonction définir le prochain mouvement quand la balle touche un rebord du cadre ou la palette.
   executeNextMove() {
-    console.log("execute next move");
     if (this.caseAtTheTime.line === this.lineMax) {
       if (this.caseAtTheTime.column === this.platePosition[0]) {
         if (this.caseAtTheTime.column === 1) {
@@ -363,6 +416,27 @@ class GameCl {
         this.diagDownLeft();
       }
     }
+    if (this.moveType === "upLeft") {
+      if (this.caseAtTheTime.column === 1 && this.caseAtTheTime.line != "A")
+        this.diagUpRight();
+      if (this.caseAtTheTime.line === "A" && this.caseAtTheTime.column != 1)
+        this.diagDownLeft();
+      if (this.caseAtTheTime.line === "A" && this.caseAtTheTime.column === 1)
+        this.diagDownRight();
+    }
+    if (
+      this.moveType === "downLeft" &&
+      this.caseAtTheTime.line != this.lineMax &&
+      this.caseAtTheTime.column === 1
+    )
+      this.diagDownRight();
+
+    if (
+      this.moveType === "downRight" &&
+      this.caseAtTheTime.line != this.lineMax &&
+      this.caseAtTheTime.column === this.columnNumber
+    )
+      this.diagDownLeft();
   }
 }
 
