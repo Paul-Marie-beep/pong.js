@@ -66,7 +66,7 @@ class GameCl {
   baseCasesArray = [];
   lineMax;
   // On initialise newLine à 0 parce que c'est sa position initiale pour la première descente
-  newLine = 1;
+  newLine = "A";
   newColumn;
   caseAtTheTime;
   stopCondition;
@@ -84,7 +84,7 @@ class GameCl {
     this.showPlateMoving();
     this.buildBoard();
     this.calcLineMax();
-    // this.ballInitialDescent();
+    this.ballInitialDescent();
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,10 +119,15 @@ class GameCl {
     };
     // On assigne une colonne de départ au hasard pour la balle, attendu qu'elle part forcément de la première colonne.
     const ballInitialColumn = randomInt(1, this.columnNumber);
-    console.log(this.boardCasesArray, ballInitialColumn);
+
+    // On met la balle dans la position de départ.
     this.boardCasesArray.find(
       (cas) => cas.column === ballInitialColumn
     ).ballPresence = true;
+    // On met à jour la variable qui stocke la position de la balle
+    this.caseAtTheTime = this.boardCasesArray.find(
+      (cas) => cas.ballPresence === true
+    );
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,8 +177,8 @@ class GameCl {
     document.querySelector(".ball").parentElement.innerHTML = "";
 
     // On sélection la case où l'on doit mettre la balle et on la rajoute. On soustrait 1 car on la sélectionne par l'index d'une nodeliste, index qui commence donc à 0.
-    document.querySelectorAll(`.line-${caseAtTheTime.line}`)[
-      caseAtTheTime.column - 1
+    document.querySelectorAll(`.line-${this.caseAtTheTime.line}`)[
+      this.caseAtTheTime.column - 1
     ].innerHTML = '<div class="ball"></div>';
   }
 
@@ -196,7 +201,6 @@ class GameCl {
     this.boardCasesArray
       .find((cas) => cas.column === this.newColumn && cas.line === this.newLine)
       .toggleBallPresence();
-
     //  On met à jour la variable qui stocke la position de la case avec la nouvelle position
     this.caseAtTheTime = this.boardCasesArray.find(
       (cas) => cas.ballPresence === true
@@ -204,7 +208,7 @@ class GameCl {
 
     // On met à jour la représentations graphique
     this.showBoard();
-
+    console.log("blink executed", this.caseAtTheTime);
     // On place une conditions pour arrêter l'intervalle dans lequel sera placée la fonction
     if (this.stopCondition) {
       clearInterval(this.descentInterval);
@@ -212,25 +216,27 @@ class GameCl {
     }
   }
 
-  //   ballInitialDescent() {
-  //     console.log("case at the time", this.caseAtTheTime);
-  //     this.newColumn = this.ballInitialColumn;
-  //     this.newLine =
-  //       this.alphabet[
-  //         this.alphabet.findIndex(
-  //           (letter) => letter === this.caseAtTheTime.line
-  //         ) + 1
-  //       ];
-  //     this.stopCondition =
-  //       this.boardCasesArray.find((cas) => cas.ballPresence === true).line ===
-  //       this.lineMax;
+  ballInitialDescent() {
+    // console.log("case at the time", this.caseAtTheTime);
+    this.newColumn = this.caseAtTheTime.column;
+    // console.log("new column", this.newColumn);
 
-  //     this.descentInterval = setInterval(this.Blink.bind(this), 500);
-  //   }
+    this.newLine =
+      this.alphabet[
+        this.alphabet.findIndex(
+          (letter) => letter === this.caseAtTheTime.line
+        ) + 1
+      ];
+    this.stopCondition =
+      this.boardCasesArray.find((cas) => cas.ballPresence === true).line ===
+      this.lineMax;
 
-  //   executeNextMove() {
-  //     console.log("execute next move");
-  //   }
+    this.descentInterval = setInterval(this.Blink.bind(this), 500);
+  }
+
+  executeNextMove() {
+    console.log("execute next move");
+  }
 }
 
 const newGame = new GameCl(fixedForNowlineNumber, fixedForNowColumnNumber);
