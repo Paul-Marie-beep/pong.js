@@ -257,6 +257,7 @@ class GameCl {
   // On programme la fonction qui définit quel mouvement va effectuer
   startmove() {
     this.moveInterval = setInterval(() => {
+      console.log("blink");
       // On enlève la balle de la case qu'elle occupait jusqu'à présent
       this.boardCasesArray
         .find((cas) => cas.ballPresence === true)
@@ -278,8 +279,8 @@ class GameCl {
       this.showBoard();
       // On place une conditions pour arrêter l'intervalle dans lequel sera placée la fonction. On la chosit grâce à la fonction dans la paranthèse.
       if (this.choseStopCondition()) {
+        console.log("stop condition");
         this.executeNextMove();
-        clearInterval(this.moveInterval);
       }
     }, 500);
   }
@@ -415,6 +416,8 @@ class GameCl {
 
   // Cette fonction définir le prochain mouvement quand la balle touche un rebord du cadre ou la palette.
   executeNextMove() {
+    clearInterval(this.moveInterval);
+
     if (this.caseAtTheTime.line === this.lineMax) {
       if (this.caseAtTheTime.column === this.platePosition[0]) {
         if (this.caseAtTheTime.column === 1) {
@@ -478,7 +481,6 @@ class GameCl {
   defeat() {
     console.log("Loser !!");
     defeatPopUp.classList.remove("hidden");
-    // setInterval(this.defeatBlink.bind(globalThis), 400);
     document.querySelector(".ball").classList.add("hidden");
     // On ne peut pas utiliser de constante globale pour la balle car on doit la sélectionner en "temps réel" et non au début de l'exécution du programme.
   }
