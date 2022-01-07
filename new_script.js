@@ -63,12 +63,12 @@ const alphabet = [
 ];
 
 class PlayAreaCl {
-  boardCasesArray = [];
-  baseCasesArray = [];
-
   constructor(lineNumber, columnNumber) {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
+
+    this.boardCasesArray = [];
+    this.baseCasesArray = [];
 
     this.createJsBaseCases();
     this.createJsBoardCases();
@@ -138,6 +138,16 @@ class GameCl {
     this.columnNumber = columnNumber;
     this.baseCasesArray = baseCasesArray;
     this.boardCasesArray = boardCasesArray;
+
+    this.platePosition = [];
+    this.lineMax;
+    // On initialise newLine à 0 parce que c'est sa position initiale pour la première descente
+    this.newLine = "A";
+    this.newColumn;
+    this.caseAtTheTime;
+    this.stopCondition;
+    this.descentInterval;
+    this.moveType;
 
     this.setBase();
     this.setBall();
