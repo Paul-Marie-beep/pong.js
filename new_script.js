@@ -148,6 +148,7 @@ class GameCl {
     this.stopCondition;
     this.descentInterval;
     this.moveType;
+    this.moveInterval;
 
     this.setBase();
     this.setBall();
@@ -254,36 +255,40 @@ class GameCl {
   }
 
   // On programme la fonction qui définit quel mouvement va effectuer
-  blink() {
-    // On enlève la balle de la case qu'elle occupait jusqu'à présent
-    this.boardCasesArray
-      .find((cas) => cas.ballPresence === true)
-      .toggleBallPresence();
+  startmove() {
+    this.moveInterval = setInterval(() => {
+      // On enlève la balle de la case qu'elle occupait jusqu'à présent
+      this.boardCasesArray
+        .find((cas) => cas.ballPresence === true)
+        .toggleBallPresence();
 
-    // On choisit l'itérateur qui va nous donner la nouvelle position de la balle
-    this.choseMoveIterator();
-    //  On met la balle dans sa nouvelle case
-    this.boardCasesArray
-      .find((cas) => cas.column === this.newColumn && cas.line === this.newLine)
-      .toggleBallPresence();
-    //  On met à jour la variable qui stocke la position de la case avec la nouvelle position
-    this.caseAtTheTime = this.boardCasesArray.find(
-      (cas) => cas.ballPresence === true
-    );
-    // On met à jour la représentations graphique
-    this.showBoard();
-    // On place une conditions pour arrêter l'intervalle dans lequel sera placée la fonction. On la chosit grâce à la fonction dans la paranthèse.
-    if (this.choseStopCondition()) {
-      clearInterval(this.descentInterval);
-      this.executeNextMove();
-    }
+      // On choisit l'itérateur qui va nous donner la nouvelle position de la balle
+      this.choseMoveIterator();
+      //  On met la balle dans sa nouvelle case
+      this.boardCasesArray
+        .find(
+          (cas) => cas.column === this.newColumn && cas.line === this.newLine
+        )
+        .toggleBallPresence();
+      //  On met à jour la variable qui stocke la position de la case avec la nouvelle position
+      this.caseAtTheTime = this.boardCasesArray.find(
+        (cas) => cas.ballPresence === true
+      );
+      // On met à jour la représentations graphique
+      this.showBoard();
+      // On place une conditions pour arrêter l'intervalle dans lequel sera placée la fonction. On la chosit grâce à la fonction dans la paranthèse.
+      if (this.choseStopCondition()) {
+        this.executeNextMove();
+        clearInterval(this.moveInterval);
+      }
+    }, 500);
   }
 
   // Fontion qui lance la  descente initale: particulière car s'effectue en diagonale
   ballInitialDescent() {
     this.newColumn = this.caseAtTheTime.column;
     this.moveType = "descent";
-    this.descentInterval = setInterval(this.blink.bind(this), 500);
+    this.startmove();
   }
 
   // Itérateur pour la descente verticale
@@ -305,7 +310,7 @@ class GameCl {
   // On écrit nos méthodes pour les autres types de mouvements qui seront nécessairement diagonaux. Cf. la méthode initiale descent pour une meilleure compréhension, le comportement des méthodes suivantes en découle.
   diagUpRight() {
     this.moveType = "upRight";
-    this.descentInterval = setInterval(this.blink.bind(this), 500);
+    this.startmove();
   }
 
   upRightIterator() {
@@ -329,7 +334,7 @@ class GameCl {
 
   diagUpLeft() {
     this.moveType = "upLeft";
-    this.descentInterval = setInterval(this.blink.bind(this), 500);
+    this.startmove();
   }
 
   upLeftIterator() {
@@ -350,7 +355,7 @@ class GameCl {
 
   diagDownLeft() {
     this.moveType = "downLeft";
-    this.descentInterval = setInterval(this.blink.bind(this), 500);
+    this.startmove();
   }
 
   downLeftIterator() {
@@ -371,7 +376,7 @@ class GameCl {
 
   diagDownRight() {
     this.moveType = "downRight";
-    this.descentInterval = setInterval(this.blink.bind(this), 500);
+    this.startmove();
   }
 
   downRightIterator() {
@@ -473,7 +478,7 @@ class GameCl {
   defeat() {
     console.log("Loser !!");
     defeatPopUp.classList.remove("hidden");
-    setInterval(this.defeatBlink.bind(globalThis), 400);
+    // setInterval(this.defeatBlink.bind(globalThis), 400);
     document.querySelector(".ball").classList.add("hidden");
     // On ne peut pas utiliser de constante globale pour la balle car on doit la sélectionner en "temps réel" et non au début de l'exécution du programme.
   }
