@@ -33,39 +33,97 @@ const base = document.querySelector(".base");
 const board = document.querySelector(".board");
 const defeatPopUp = document.querySelector(".defeat-popup");
 const defeatTitle = document.querySelector(".defeat-title");
+const alphabet = [
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z",
+];
+
+class PlayAreaCl {
+  boardCasesArray = [];
+  baseCasesArray = [];
+
+  constructor(lineNumber, columnNumber) {
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber;
+
+    this.createJsBaseCases();
+    this.createJsBoardCases();
+    this.buildBoard();
+    this.buildBase();
+    this.newGame();
+  }
+
+  // On crée la base dans laquelle la palette va se mouvoir
+  createJsBaseCases() {
+    for (let i = 1; i < this.columnNumber + 1; i++) {
+      this.baseCasesArray.push(new baseCaseCl(i));
+    }
+  }
+
+  // On crée les cases dans lauquelle la balle va se mouvoir
+  createJsBoardCases() {
+    for (let i = 1; i <= this.lineNumber; i++) {
+      for (let j = 1; j <= this.columnNumber; j++) {
+        this.boardCasesArray.push(new boardCaseCl(alphabet[i - 1], j));
+      }
+    }
+  }
+
+  // On construit les cases où va évoluer la balle
+  buildBoard() {
+    board.innerHTML = "";
+    this.boardCasesArray.forEach(function (cas) {
+      const html = `<div class="case line-${cas.line} column-${cas.column}"></div></div>`;
+      board.insertAdjacentHTML("beforeend", html);
+    });
+  }
+
+  buildBase() {
+    base.innerHTML = "";
+    for (let i = 1; i < this.baseCasesArray.length + 1; i++) {
+      let html;
+      html = `<div class="base--case base--case-${i}"><div class="plate plate-${i} hidden"></div></div>`;
+      base.insertAdjacentHTML("beforeend", html);
+    }
+  }
+
+  newGame() {
+    const newGame = new GameCl(
+      this.lineNumber,
+      this.columnNumber,
+      this.baseCasesArray,
+      this.boardCasesArray
+    );
+  }
+}
 
 class GameCl {
   platePosition = [];
-  alphabet = [
-    "A",
-    "B",
-    "C",
-    "D",
-    "E",
-    "F",
-    "G",
-    "H",
-    "I",
-    "J",
-    "K",
-    "L",
-    "M",
-    "N",
-    "O",
-    "P",
-    "Q",
-    "R",
-    "S",
-    "T",
-    "U",
-    "V",
-    "W",
-    "X",
-    "Y",
-    "Z",
-  ];
-  boardCasesArray = [];
-  baseCasesArray = [];
+
   lineMax;
   // On initialise newLine à 0 parce que c'est sa position initiale pour la première descente
   newLine = "A";
@@ -75,18 +133,16 @@ class GameCl {
   descentInterval;
   moveType;
 
-  constructor(lineNumber, columnNumber) {
+  constructor(lineNumber, columnNumber, baseCasesArray, boardCasesArray) {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
+    this.baseCasesArray = baseCasesArray;
+    this.boardCasesArray = boardCasesArray;
 
-    this.createJsBaseCases();
     this.setBase();
-    this.createJsBoardCases();
     this.setBall();
-    this.buildBase();
     this.moveplate();
     this.showPlateMoving();
-    this.buildBoard();
     this.calcLineMax();
     this.ballInitialDescent();
   }
@@ -94,26 +150,10 @@ class GameCl {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   // On commence  par créer le backend du jeu
 
-  // On crée la base dans laquelle la palette va se mouvoir
-  createJsBaseCases() {
-    for (let i = 1; i < this.columnNumber + 1; i++) {
-      this.baseCasesArray.push(new baseCaseCl(i));
-    }
-  }
-
   // On place d'office la palette au centre pour le début du jeu
   setBase() {
     this.platePosition.unshift(this.columnNumber / 2);
     this.platePosition.push(this.columnNumber / 2 + 1);
-  }
-
-  // On crée les cases dans lauquelle la balle va se mouvoir
-  createJsBoardCases() {
-    for (let i = 1; i <= this.lineNumber; i++) {
-      for (let j = 1; j <= this.columnNumber; j++) {
-        this.boardCasesArray.push(new boardCaseCl(this.alphabet[i - 1], j));
-      }
-    }
   }
 
   // On place la balle dans une position de départ choisie au hasard
@@ -132,18 +172,17 @@ class GameCl {
     this.caseAtTheTime = this.boardCasesArray.find(
       (cas) => cas.ballPresence === true
     );
+    this.showBallPosition();
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
   // On crée le front end
 
-  // On va construire la base dans laquelle la palette va bouger``
-  buildBase() {
-    base.innerHTML = "";
-    for (let i = 1; i < this.baseCasesArray.length + 1; i++) {
-      const html = `<div class="base--case base--case-${i}"><div class="plate plate-${i} hidden"></div></div>`;
-      base.insertAdjacentHTML("beforeend", html);
-    }
+  // On montre la position de départ de la balle
+  showBallPosition() {
+    document.querySelectorAll(`.line-${this.caseAtTheTime.line}`)[
+      this.caseAtTheTime.column - 1
+    ].innerHTML = '<div class="ball"></div>';
   }
 
   // On cache toutes cases de la base ou peu se  du jeu puis on découvre celle où se situe effectivement la palette
@@ -161,29 +200,18 @@ class GameCl {
     });
   }
 
-  // On construit les cases où va évoluer la balle
-  buildBoard() {
-    board.innerHTML = "";
-    this.boardCasesArray.forEach(function (cas) {
-      if (cas.ballPresence) {
-        const html = `<div class="case line-${cas.line} column-${cas.column}"><div class="ball"></div></div>`;
-        board.insertAdjacentHTML("beforeend", html);
-      } else {
-        const html = `<div class="case line-${cas.line} column-${cas.column}"></div></div>`;
-        board.insertAdjacentHTML("beforeend", html);
-      }
-    });
-  }
-
   // On met à jour la représentation graphique en fonction des mouvements de la balle
   showBoard() {
     // On vide la  (ie la div) contenant la balle au préalable. On la vide en remontant à l'élement parent de la la balle et en supprimant le html de la div
+    console.log(
+      "case at the time",
+      this.caseAtTheTime.line,
+      this.caseAtTheTime.column
+    );
     document.querySelector(".ball").parentElement.innerHTML = "";
 
     // On sélection la case où l'on doit mettre la balle et on la rajoute. On soustrait 1 car on la sélectionne par l'index d'une nodeliste, index qui commence donc à 0.
-    document.querySelectorAll(`.line-${this.caseAtTheTime.line}`)[
-      this.caseAtTheTime.column - 1
-    ].innerHTML = '<div class="ball"></div>';
+    this.showBallPosition();
   }
 
   //////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,10 +279,8 @@ class GameCl {
   // Itérateur pour la descente verticale
   ballInitialDescentIterator() {
     this.newLine =
-      this.alphabet[
-        this.alphabet.findIndex(
-          (letter) => letter === this.caseAtTheTime.line
-        ) + 1
+      alphabet[
+        alphabet.findIndex((letter) => letter === this.caseAtTheTime.line) + 1
       ];
   }
 
@@ -274,10 +300,8 @@ class GameCl {
 
   upRightIterator() {
     this.newLine =
-      this.alphabet[
-        this.alphabet.findIndex(
-          (letter) => letter === this.caseAtTheTime.line
-        ) - 1
+      alphabet[
+        alphabet.findIndex((letter) => letter === this.caseAtTheTime.line) - 1
       ];
     this.newColumn = this.caseAtTheTime.column + 1;
   }
@@ -300,10 +324,8 @@ class GameCl {
 
   upLeftIterator() {
     this.newLine =
-      this.alphabet[
-        this.alphabet.findIndex(
-          (letter) => letter === this.caseAtTheTime.line
-        ) - 1
+      alphabet[
+        alphabet.findIndex((letter) => letter === this.caseAtTheTime.line) - 1
       ];
     this.newColumn = this.caseAtTheTime.column - 1;
   }
@@ -323,10 +345,8 @@ class GameCl {
 
   downLeftIterator() {
     this.newLine =
-      this.alphabet[
-        this.alphabet.findIndex(
-          (letter) => letter === this.caseAtTheTime.line
-        ) + 1
+      alphabet[
+        alphabet.findIndex((letter) => letter === this.caseAtTheTime.line) + 1
       ];
     this.newColumn = this.caseAtTheTime.column - 1;
   }
@@ -346,10 +366,8 @@ class GameCl {
 
   downRightIterator() {
     this.newLine =
-      this.alphabet[
-        this.alphabet.findIndex(
-          (letter) => letter === this.caseAtTheTime.line
-        ) + 1
+      alphabet[
+        alphabet.findIndex((letter) => letter === this.caseAtTheTime.line) + 1
       ];
     this.newColumn = this.caseAtTheTime.column + 1;
   }
@@ -455,4 +473,20 @@ class GameCl {
   }
 }
 
-const newGame = new GameCl(fixedForNowlineNumber, fixedForNowColumnNumber);
+class PerformCl {
+  constructor(lineNumber, columnNumber) {
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber;
+
+    this.newPlayArea();
+  }
+
+  newPlayArea() {
+    const newPlayArea = new PlayAreaCl(this.lineNumber, this.columnNumber);
+  }
+}
+
+const newPerform = new PerformCl(
+  fixedForNowlineNumber,
+  fixedForNowColumnNumber
+);
