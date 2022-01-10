@@ -6,13 +6,6 @@ const fixedForNowlineNumber = 8;
 let newGame;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-class baseCaseCl {
-  constructor(column) {
-    this.column = column;
-    this.platePresence = false;
-  }
-}
-
 class boardCaseCl {
   constructor(line, column) {
     this.line = line;
@@ -70,20 +63,11 @@ class PlayAreaCl {
     this.columnNumber = columnNumber;
 
     this.boardCasesArray = [];
-    this.baseCasesArray = [];
 
-    this.createJsBaseCases();
     this.createJsBoardCases();
     this.buildBoard();
     this.buildBase();
     this.newGame();
-  }
-
-  // On crée la base dans laquelle la palette va se mouvoir
-  createJsBaseCases() {
-    for (let i = 1; i < this.columnNumber + 1; i++) {
-      this.baseCasesArray.push(new baseCaseCl(i));
-    }
   }
 
   // On crée les cases dans lauquelle la balle va se mouvoir
@@ -106,7 +90,7 @@ class PlayAreaCl {
 
   buildBase() {
     base.innerHTML = "";
-    for (let i = 1; i < this.baseCasesArray.length + 1; i++) {
+    for (let i = 1; i < this.columnNumber; i++) {
       let html;
       html = `<div class="base--case base--case-${i}"><div class="plate plate-${i} hidden"></div></div>`;
       base.insertAdjacentHTML("beforeend", html);
@@ -117,7 +101,6 @@ class PlayAreaCl {
     newGame = new GameCl(
       this.lineNumber,
       this.columnNumber,
-      this.baseCasesArray,
       this.boardCasesArray
     );
   }
@@ -135,10 +118,9 @@ class GameCl {
   descentInterval;
   moveType;
 
-  constructor(lineNumber, columnNumber, baseCasesArray, boardCasesArray) {
+  constructor(lineNumber, columnNumber, boardCasesArray) {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
-    this.baseCasesArray = baseCasesArray;
     this.boardCasesArray = boardCasesArray;
 
     this.platePosition = [];
@@ -236,7 +218,7 @@ class GameCl {
       this.showPlateMoving();
     }
     if (event.key === "ArrowRight") {
-      if (this.platePosition[1] === this.baseCasesArray.length) return;
+      if (this.platePosition[1] === this.columnNumber) return;
       this.platePosition.forEach((pos, i) => (this.platePosition[i] = pos + 1));
       this.showPlateMoving();
     }
