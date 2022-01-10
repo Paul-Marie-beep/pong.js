@@ -136,7 +136,7 @@ class GameCl {
 
     this.setBase();
     this.setBall();
-    this.moveplate();
+    this.plateHandler();
     this.showPlateMoving();
     this.calcLineMax();
     this.ballInitialDescent();
@@ -207,7 +207,7 @@ class GameCl {
 
   //////////////////////////////////////////////////////////////////////////////////////////////
   // On fait bouger la plateforme
-  moveplate() {
+  plateHandler() {
     document.addEventListener("keydown", this.listenerMethod.bind(this));
   }
 
@@ -261,7 +261,7 @@ class GameCl {
       if (this.choseStopCondition()) {
         this.executeNextMove();
       }
-    }, 1000);
+    }, 200);
   }
 
   // Fontion qui lance la  descente initale: particulière car s'effectue en diagonale
@@ -478,10 +478,8 @@ class GameCl {
       defeatPopUp.classList.add("hidden");
       this.setBase();
       this.setBall();
-      this.moveplate();
       this.showPlateMoving();
       this.ballInitialDescent();
-      console.log("position de la palette", this.platePosition);
     };
     defeatPopUpBtn.addEventListener("click", relaunchGame);
   }
