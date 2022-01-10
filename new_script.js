@@ -213,7 +213,6 @@ class GameCl {
 
   // On utilise une méthode séparée pour la fonction de l'event listener pour pouvoir lui faire passer un paramètre tout en bindant this à la classe game
   listenerMethod(event) {
-    console.log("position palette", this.platePosition);
     if (event.key === "ArrowLeft") {
       if (this.platePosition[0] === 1) return;
       this.platePosition.forEach((pos, i) => (this.platePosition[i] = pos - 1));
@@ -485,20 +484,7 @@ class GameCl {
   }
 }
 
-class PerformCl {
-  constructor(lineNumber, columnNumber) {
-    this.lineNumber = lineNumber;
-    this.columnNumber = columnNumber;
-
-    this.newPlayArea();
-  }
-
-  newPlayArea() {
-    const newPlayArea = new PlayAreaCl(this.lineNumber, this.columnNumber);
-  }
-}
-
-const newPerform = new PerformCl(
+const newPlayArea = new PlayAreaCl(
   fixedForNowlineNumber,
   fixedForNowColumnNumber
 );
