@@ -90,9 +90,9 @@ class PlayAreaCl {
 
   buildBase() {
     base.innerHTML = "";
-    for (let i = 1; i < this.columnNumber; i++) {
+    for (let i = 1; i < this.columnNumber + 1; i++) {
       let html;
-      html = `<div class="base--case base--case-${i}"><div class="plate plate-${i} hidden"></div></div>`;
+      html = `<div class="case base--case base--case-${i}"><div class="plate plate-${i} hidden"></div></div>`;
       base.insertAdjacentHTML("beforeend", html);
     }
   }
@@ -213,6 +213,7 @@ class GameCl {
 
   // On utilise une méthode séparée pour la fonction de l'event listener pour pouvoir lui faire passer un paramètre tout en bindant this à la classe game
   listenerMethod(event) {
+    console.log("position palette", this.platePosition);
     if (event.key === "ArrowLeft") {
       if (this.platePosition[0] === 1) return;
       this.platePosition.forEach((pos, i) => (this.platePosition[i] = pos - 1));
@@ -260,7 +261,7 @@ class GameCl {
       if (this.choseStopCondition()) {
         this.executeNextMove();
       }
-    }, 100);
+    }, 1000);
   }
 
   // Fontion qui lance la  descente initale: particulière car s'effectue en diagonale
