@@ -147,6 +147,7 @@ class GameCl {
 
   // On place d'office la palette au centre pour le début du jeu
   setBase() {
+    this.platePosition = [];
     this.platePosition.unshift(this.columnNumber / 2);
     this.platePosition.push(this.columnNumber / 2 + 1);
   }
@@ -479,6 +480,7 @@ class GameCl {
       this.moveplate();
       this.showPlateMoving();
       this.ballInitialDescent();
+      console.log("position de la palette", this.platePosition);
     };
     defeatPopUpBtn.addEventListener("click", relaunchGame);
   }
