@@ -60,23 +60,40 @@ body {
 
 .popup {
   width: 75%;
-  height: 60%;
+  min-height: 60%;
   background-color: blanchedalmond;
   margin: auto;
   position: fixed;
-  top: 33%;
+  top: 10%;
   left: 12.5%;
-  border: 2px solid red;
 }
 
-.defeat-title {
-  color: red;
+.title {
   font-size: 9rem;
   font-weight: bolder;
   font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   margin: auto;
   margin-top: 6rem;
   width: fit-content;
+  word-wrap: break-word;
+}
+
+.defeat-title {
+  color: red;
+}
+
+.begin-title {
+  color: blue;
+}
+
+.info-title {
+  color: lime;
+  font-size: 3rem;
+  font-weight: bold;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  margin: auto;
+  width: fit-content;
+  margin-top: 2rem;
 }
 
 .popup-button {
@@ -91,4 +108,10 @@ body {
   margin-top: 5rem;
   color: turquoise;
   cursor: pointer;
+}
+
+.form-row {
+  width: fit-content;
+  margin: auto;
+  /* border: 2px solid red; */
 }

@@ -27,7 +27,13 @@ const base = document.querySelector(".base");
 const board = document.querySelector(".board");
 const defeatPopUp = document.querySelector(".defeat-popup");
 const defeatPopUpBtn = document.querySelector(".defeat-popup-button");
-const defeatTitle = document.querySelector(".defeat-title");
+const defeatTitleBox = document.querySelector(".defeat-title-box");
+const beginPopUp = document.querySelector(".begin-popup");
+const beginPopUpBtn = document.querySelector(".begin-popup-button");
+const beginPopUpTitle = document.querySelector(".begin-title");
+const infoPopUp = document.querySelector(".info-popup");
+const nameInput = document.querySelector(".form_input");
+const infoPopUpBtn = document.querySelector(".info-popup-button");
 const alphabet = [
   "A",
   "B",
@@ -58,9 +64,10 @@ const alphabet = [
 ];
 
 class PlayAreaCl {
-  constructor(lineNumber, columnNumber) {
+  constructor(lineNumber, columnNumber, playerName) {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
+    this.playerName = playerName;
 
     this.boardCasesArray = [];
 
@@ -101,7 +108,8 @@ class PlayAreaCl {
     newGame = new GameCl(
       this.lineNumber,
       this.columnNumber,
-      this.boardCasesArray
+      this.boardCasesArray,
+      this.playerName
     );
   }
 }
@@ -118,10 +126,11 @@ class GameCl {
   descentInterval;
   moveType;
 
-  constructor(lineNumber, columnNumber, boardCasesArray) {
+  constructor(lineNumber, columnNumber, boardCasesArray, playerName) {
     this.lineNumber = lineNumber;
     this.columnNumber = columnNumber;
     this.boardCasesArray = boardCasesArray;
+    this.playerName = playerName;
 
     this.platePosition = [];
     this.lineMax;
@@ -459,6 +468,9 @@ class GameCl {
 
   // Qu'est-ce qui se passe en cas de défaite ?
   defeat() {
+    defeatTitleBox.innerHTML = "";
+    const html_2 = `<div class = "title defeat-title">${this.playerName}</div> <br/> <div class = "title defeat-title">Gros Loser !!!</div> `;
+    defeatTitleBox.insertAdjacentHTML("afterbegin", html_2);
     defeatPopUp.classList.remove("hidden");
     document.querySelector(".ball").parentElement.innerHTML = "";
     // On ne peut pas utiliser de constante globale pour la balle car on doit la sélectionner en "temps réel" et non au début de l'exécution du programme.
@@ -484,7 +496,44 @@ class GameCl {
   }
 }
 
-const newPlayArea = new PlayAreaCl(
-  fixedForNowlineNumber,
-  fixedForNowColumnNumber
-);
+class PerformCL {
+  constructor() {
+    this.listenForInput();
+
+    this.playerName;
+  }
+
+  // On active l'event listener dans le premir popup qui enregistre les prénoms
+  listenForInput() {
+    infoPopUpBtn.addEventListener("click", this.getPlayerName.bind(this));
+  }
+
+  // Quand la personne rentre son prénom, on cache le premier popup, on montre le deuxième
+  getPlayerName() {
+    this.playerName = nameInput.value;
+    infoPopUpBtn.removeEventListener("click", this.getPlayerName.bind(this));
+    infoPopUp.classList.add("hidden");
+    const html = `<span class = "player-name"> ${this.playerName}</span>`;
+    beginPopUpTitle.insertAdjacentHTML("beforeend", html);
+    beginPopUp.classList.remove("hidden");
+    this.listenForBegin();
+  }
+
+  // On met en place l'event listener pour lancer le jeu
+  listenForBegin() {
+    beginPopUpBtn.addEventListener("click", this.initGame.bind(this));
+  }
+
+  // Call back function de l'event listener
+  initGame() {
+    const newPlayArea = new PlayAreaCl(
+      fixedForNowlineNumber,
+      fixedForNowColumnNumber,
+      this.playerName
+    );
+    beginPopUpBtn.removeEventListener("click", this.initGame.bind(this));
+    beginPopUp.classList.add("hidden");
+  }
+}
+
+const newPerform = new PerformCL();
