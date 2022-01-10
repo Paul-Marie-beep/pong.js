@@ -82,17 +82,15 @@ body {
 }
 
 .popup-button {
+  position: relative;
   height: 4rem;
   background-color: greenyellow;
   border: 2 px solid blue;
   border-radius: 10px;
   width: fit-content;
   margin: auto;
+  margin-left: 25rem;
   margin-top: 5rem;
-}
-
-.btn-lnk {
-  text-decoration: none;
   color: turquoise;
-  font-weight: bold;
+  cursor: pointer;
 }

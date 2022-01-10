@@ -3,6 +3,7 @@
 // Constantes ficées pour dév (le nombre de colonnes doit être pair)
 const fixedForNowColumnNumber = 12;
 const fixedForNowlineNumber = 8;
+let newGame;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 class baseCaseCl {
@@ -32,6 +33,7 @@ class boardCaseCl {
 const base = document.querySelector(".base");
 const board = document.querySelector(".board");
 const defeatPopUp = document.querySelector(".defeat-popup");
+const defeatPopUpBtn = document.querySelector(".defeat-popup-button");
 const defeatTitle = document.querySelector(".defeat-title");
 const alphabet = [
   "A",
@@ -112,7 +114,7 @@ class PlayAreaCl {
   }
 
   newGame() {
-    const newGame = new GameCl(
+    newGame = new GameCl(
       this.lineNumber,
       this.columnNumber,
       this.baseCasesArray,
@@ -214,11 +216,6 @@ class GameCl {
   // On met à jour la représentation graphique en fonction des mouvements de la balle
   showBoard() {
     // On vide la  (ie la div) contenant la balle au préalable. On la vide en remontant à l'élement parent de la la balle et en supprimant le html de la div
-    console.log(
-      "case at the time",
-      this.caseAtTheTime.line,
-      this.caseAtTheTime.column
-    );
     document.querySelector(".ball").parentElement.innerHTML = "";
 
     // On sélection la case où l'on doit mettre la balle et on la rajoute. On soustrait 1 car on la sélectionne par l'index d'une nodeliste, index qui commence donc à 0.
@@ -257,7 +254,6 @@ class GameCl {
   // On programme la fonction qui définit quel mouvement va effectuer
   startmove() {
     this.moveInterval = setInterval(() => {
-      console.log("blink");
       // On enlève la balle de la case qu'elle occupait jusqu'à présent
       this.boardCasesArray
         .find((cas) => cas.ballPresence === true)
@@ -279,10 +275,9 @@ class GameCl {
       this.showBoard();
       // On place une conditions pour arrêter l'intervalle dans lequel sera placée la fonction. On la chosit grâce à la fonction dans la paranthèse.
       if (this.choseStopCondition()) {
-        console.log("stop condition");
         this.executeNextMove();
       }
-    }, 500);
+    }, 100);
   }
 
   // Fontion qui lance la  descente initale: particulière car s'effectue en diagonale
@@ -416,8 +411,10 @@ class GameCl {
 
   // Cette fonction définir le prochain mouvement quand la balle touche un rebord du cadre ou la palette.
   executeNextMove() {
+    // On commence par arrêter l'intervalle avant d'en recréer un autre
     clearInterval(this.moveInterval);
 
+    // On regarde comment doit réagir la balle en fonction des événements
     if (this.caseAtTheTime.line === this.lineMax) {
       if (this.caseAtTheTime.column === this.platePosition[0]) {
         if (this.caseAtTheTime.column === 1) {
@@ -479,14 +476,29 @@ class GameCl {
 
   // Qu'est-ce qui se passe en cas de défaite ?
   defeat() {
-    console.log("Loser !!");
     defeatPopUp.classList.remove("hidden");
-    document.querySelector(".ball").classList.add("hidden");
+    document.querySelector(".ball").parentElement.innerHTML = "";
     // On ne peut pas utiliser de constante globale pour la balle car on doit la sélectionner en "temps réel" et non au début de l'exécution du programme.
+
+    this.boardCasesArray
+      .find((cas) => cas.ballPresence === true)
+      .toggleBallPresence();
+
+    this.startAgain();
   }
 
-  defeatBlink() {
-    defeatTitle.classList.toggle("hidden");
+  startAgain() {
+    const relaunchGame = () => {
+      defeatPopUpBtn.removeEventListener("click", relaunchGame);
+
+      defeatPopUp.classList.add("hidden");
+      this.setBase();
+      this.setBall();
+      this.moveplate();
+      this.showPlateMoving();
+      this.ballInitialDescent();
+    };
+    defeatPopUpBtn.addEventListener("click", relaunchGame);
   }
 }
 
